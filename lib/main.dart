@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'period.dart';
 
@@ -12,13 +13,27 @@ String _image2Url = "";
 List<Period> _periods = [];
 bool _grade9Mode = false;
 bool _hideTopMessage = false;
+bool _enableCustomPeriodNames = false;
+List<CustomPeriodName> _customPeriodNames = [];
+List<ListTile> _customPeriodNameFields = [];
 
 enum MenuChoices { refresh, settings }
+
+class CustomPeriodName {
+  String originalName;
+  String customName;
+
+  CustomPeriodName(String _originalName, String _customName) {
+    this.originalName = _originalName;
+    this.customName = _customName;
+  }
+}
 
 final String graphicsBaseUrl = "http://splash.tdchristian.ca/apps/infoboard/";
 
 void main() {
   runApp(new MyApp());
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }
 
 class MyApp extends StatelessWidget {
@@ -126,33 +141,27 @@ class _InfoBoardState extends State<InfoBoard> {
           ],
         ),
         new Expanded(
-          child: new Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: new Container(
-              decoration: new BoxDecoration(
-                  color: Colors.green[700],
-                  borderRadius: new BorderRadius.all(new Radius.circular(12.0))),
-              child: new Center(
-                  heightFactor: 5.0,
-                  child: new Text(_bottomMessage,
-                      textAlign: TextAlign.center,
-                      style: new TextStyle(
-                          fontFamily: "RobotoCondensed",
-                          fontSize: 22.0,
-                          color: Colors.white))),
-            ),
-          )
-        )
+            child: new Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: new Container(
+            decoration: new BoxDecoration(
+                color: Colors.green[700],
+                borderRadius: new BorderRadius.all(new Radius.circular(12.0))),
+            child: new Center(
+                heightFactor: 5.0,
+                child: new Text(_bottomMessage,
+                    textAlign: TextAlign.center,
+                    style: new TextStyle(
+                        fontFamily: "RobotoCondensed",
+                        fontSize: 22.0,
+                        color: Colors.white))),
+          ),
+        ))
       ]),
-      floatingActionButton: new FloatingActionButton(
-        backgroundColor: Colors.green,
-        child: new Icon(Icons.refresh),
-        onPressed: _getInfoBoard,
-      ),
       appBar: new AppBar(
         elevation: 0.0,
         title: new Text(
-          _topMessage,
+          _hideTopMessage ? "" : _topMessage,
           textAlign: TextAlign.center,
           style: new TextStyle(
               fontFamily: "RobotoCondensed",
@@ -167,20 +176,26 @@ class _InfoBoardState extends State<InfoBoard> {
                     _getInfoBoard();
                   } else if (result == MenuChoices.settings) {
                     Navigator.push(
-                      context,
-                      new MaterialPageRoute(builder: (context) => new SettingsPage()));
+                        context,
+                        new MaterialPageRoute(
+                            builder: (context) => new SettingsPage()));
                   }
                 });
               },
               itemBuilder: (BuildContext context) =>
                   <PopupMenuEntry<MenuChoices>>[
-                    const PopupMenuItem<MenuChoices>(
+                    new PopupMenuItem<MenuChoices>(
                       value: MenuChoices.refresh,
-                      child: const Text('Refresh'),
+                      child: new ListTile(
+                        leading: new Icon(Icons.refresh),
+                        title: new Text('REFRESH'),
+                      ),
                     ),
-                    const PopupMenuItem<MenuChoices>(
+                    new PopupMenuItem<MenuChoices>(
                         value: MenuChoices.settings,
-                        child: const Text("Settings"))
+                        child: new ListTile(
+                            leading: new Icon(Icons.settings),
+                            title: new Text("SETTINGS")))
                   ]),
         ],
       ),
@@ -243,7 +258,6 @@ List<Period> getPeriods(List<List<String>> periodsList) {
 
   if (periodsList.length > 0) {
     for (var p in periodsList) {
-      // DateTime startTime = DateTime.parse(p[1]);
       periods.add(new Period(p[0], p[1], p[2]));
     }
   }
@@ -253,54 +267,98 @@ List<Period> getPeriods(List<List<String>> periodsList) {
 
 class _SettingsPageState extends State<SettingsPage> {
 
+  void createCustomPeriodNameFields() {
+    if (_enableCustomPeriodNames && _customPeriodNameFields.length != 4) {
+      List<String> periodNames = [
+        "Period 1",
+        "Period 2",
+        "Period 3",
+        "Period 4"
+      ];
+
+      for (int i = 0; i < periodNames.length; i++) {
+        _customPeriodNames.add(new CustomPeriodName(periodNames[i], ""));
+        _customPeriodNameFields.add(new ListTile(
+          title: new TextFormField(
+            controller: new TextEditingController(
+              text: _customPeriodNames[i].customName
+            ),
+            decoration: new InputDecoration(labelText: periodNames[i]),
+            onFieldSubmitted: (String customName) {
+              _customPeriodNames[i].customName = customName;
+              print("Custom Period 1 Name: " + _customPeriodNames[0].customName);
+            }
+          ),
+        ));
+      }
+    } else if (!_enableCustomPeriodNames && _customPeriodNameFields.length != 0) {
+      _customPeriodNameFields = [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-
     Divider divider = new Divider();
 
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('Settings'),
-        elevation: 0.0,
-      ),
-      body: new ListView(
-        children: <Widget>[
-          new SizedBox(
-            height: 8.0
-          ),
-          new ListTile(
-            title: new Text("Hide Day 1/Day 2 Message"),
-            trailing: new Switch(
-              value: _hideTopMessage,
-              onChanged: (bool newValue) {
-                setState(() {
-                  _hideTopMessage = newValue;
-                });
-              },
-              activeColor: Colors.green,
+        appBar: new AppBar(
+          title: new Text('Settings'),
+          elevation: 0.0,
+        ),
+        body: new ListView(
+          children: <Widget>[
+            new SizedBox(height: 8.0),
+            new ListTile(
+              title: new Text("Hide Day 1/Day 2 Message"),
+              trailing: new Switch(
+                value: _hideTopMessage,
+                onChanged: (bool newValue) {
+                  setState(() {
+                    _hideTopMessage = newValue;
+                  });
+                },
+                activeColor: Colors.green,
+              ),
             ),
-          ),
-          divider,
-          new ListTile(
-            title: new Text("Enable Grade 9 Mode"),
-            subtitle: new Padding( 
-              padding: new EdgeInsets.only(top: 3.0),
-              child: new Text("This will enable changing Day 1 & 2 classes")
+            divider,
+            new ListTile(
+              title: new Text("Enable custom period names"),
+              trailing: new Switch(
+                value: _enableCustomPeriodNames,
+                onChanged: (bool newValue) {
+                  setState(() {
+                    _enableCustomPeriodNames = newValue;
+                    createCustomPeriodNameFields();
+                  });
+                },
+                activeColor: Colors.green,
+              ),
             ),
-            trailing: new Switch(
-              value: _grade9Mode,
-              onChanged: (bool newValue) {
-                setState(() {
-                  _grade9Mode = newValue;
-                });
-              },
-              activeColor: Colors.green,
-            ),
-          ),
-          divider,
-
-        ],
-      )
-    );
+            divider,
+            _enableCustomPeriodNames
+                ? new ListTile(
+                    enabled: _enableCustomPeriodNames,
+                    title: new Text("Enable Grade 9 Mode"),
+                    subtitle: new Padding(
+                        padding: new EdgeInsets.only(top: 3.0),
+                        child: new Text(
+                            "This will enable changing Day 1 & 2 classes")),
+                    trailing: new Switch(
+                      value: _grade9Mode,
+                      onChanged: (bool newValue) {
+                        setState(() {
+                          _grade9Mode = newValue;
+                        });
+                      },
+                      activeColor: Colors.green,
+                    ),
+                  )
+                : new Container(),
+            _enableCustomPeriodNames ? divider : new Container(),
+            new Column(
+              children: _customPeriodNameFields
+            )
+          ],
+        ));
   }
 }
