@@ -68,6 +68,8 @@ class _InfoBoardState extends State<InfoBoard> {
       _topMessage = topMessage;
       _bottomMessage = bottomMessage;
       _periods = periods;
+      _image1Url = image1Url;
+      _image2Url = image2Url;
     });
   }
 
@@ -227,5 +229,4 @@ List<Period> getPeriods(List<List<String>> periodsList) {
   }
   
   return periods;
-
 }
