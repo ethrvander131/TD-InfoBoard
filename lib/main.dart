@@ -10,26 +10,33 @@ String _topMessage = "TOP MESSAGE";
 String _bottomMessage = "BOTTOM MESSAGE";
 String _image1Url = "";
 String _image2Url = "";
+final String graphicsBaseUrl = "http://splash.tdchristian.ca/apps/infoboard/";
+
 List<Period> _periods = [];
 bool _grade9Mode = false;
 bool _hideTopMessage = false;
 bool _enableCustomPeriodNames = false;
-List<CustomPeriodName> _customPeriodNames = [];
-List<ListTile> _customPeriodNameFields = [];
+final List<String> periodNames = [
+  "Period 1",
+  "Period 2",
+  "Period 3",
+  "Period 4"
+];
+List<CustomPeriod> _customPeriods;
+List<CustomPeriod> _customPeriodsGrade9;
+Row _customPeriodNameFields;
 
 enum MenuChoices { refresh, settings }
 
-class CustomPeriodName {
+class CustomPeriod {
   String originalName;
   String customName;
 
-  CustomPeriodName(String _originalName, String _customName) {
+  CustomPeriod(String _originalName, String _customName) {
     this.originalName = _originalName;
     this.customName = _customName;
   }
 }
-
-final String graphicsBaseUrl = "http://splash.tdchristian.ca/apps/infoboard/";
 
 void main() {
   runApp(new MyApp());
@@ -117,72 +124,131 @@ class _InfoBoardState extends State<InfoBoard> {
     _topMessage = "TOP MESSAGE";
     _bottomMessage = "BOTTOM MESSAGE";
 
-    return new Container(
-        child: new Scaffold(
-      backgroundColor: Colors.green,
-      body: new Column(children: [
-        new Column(
-          children: _periods.map((period) => new PeriodWidget(period)).toList(),
+    AppBar appBar = new AppBar(
+      elevation: 0.0,
+      backgroundColor: new Color(0xFFFFFF),
+      title: new Text(
+        _hideTopMessage ? "" : _topMessage,
+        textAlign: TextAlign.center,
+        style: new TextStyle(
+          fontFamily: "RobotoCondensed",
+          fontSize: 24.0,
+          fontWeight: FontWeight.w600
         ),
-        new Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            new Image.network(
-              _image1Url != ""
-                  ? graphicsBaseUrl + _image1Url
-                  : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
-              height: 100.0,
-            ),
-            new Image.network(
-                _image2Url != ""
-                    ? graphicsBaseUrl + _image2Url
-                    : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
-                height: 100.0),
-          ],
+      ),
+      actions: <Widget>[
+        new PopupMenuButton<MenuChoices>(
+          onSelected: (MenuChoices result) {
+            setState(() {
+              if (result == MenuChoices.refresh) {
+                _getInfoBoard();
+              } else if (result == MenuChoices.settings) {
+                Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                    builder: (context) => new SettingsPage()
+                  )
+                );
+              }
+            });
+          },
+          itemBuilder: (BuildContext context) =>
+            <PopupMenuEntry<MenuChoices>>[
+              new PopupMenuItem<MenuChoices>(
+                value: MenuChoices.refresh,
+                child: new ListTile(
+                  leading: new Icon(Icons.refresh),
+                  title: new Text('REFRESH'),
+                ),
+              ),
+              new PopupMenuItem<MenuChoices>(
+                value: MenuChoices.settings,
+                child: new ListTile(
+                  leading: new Icon(Icons.settings),
+                  title: new Text("SETTINGS")
+                )
+              )
+            ]
         ),
-        new Expanded(
-            child: new Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: new Container(
-            decoration: new BoxDecoration(
-                color: Colors.green[700],
-                borderRadius: new BorderRadius.all(new Radius.circular(12.0))),
-            child: new Center(
-                heightFactor: 5.0,
-                child: new Text(_bottomMessage,
-                    textAlign: TextAlign.center,
-                    style: new TextStyle(
-                        fontFamily: "RobotoCondensed",
-                        fontSize: 22.0,
-                        color: Colors.white))),
+      ],
+    );
+    
+    return new Stack(
+      children: <Widget>[
+        new Scaffold(
+          appBar: _hideTopMessage ? null : appBar,
+          backgroundColor: Colors.green,
+          body: new Column(
+            children: [
+              _hideTopMessage ? new SizedBox(
+                height: 30.0
+              ) : new Container(),
+              new Column(
+                children: _periods.map((period) => new PeriodWidget(period)).toList(),
+              ),
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  new Image.network(
+                    _image1Url != ""
+                        ? graphicsBaseUrl + _image1Url
+                        : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
+                    height: 100.0,
+                  ),
+                  new Image.network(
+                      _image2Url != ""
+                          ? graphicsBaseUrl + _image2Url
+                          : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
+                      height: 100.0),
+                ],
+              ),
+              new Expanded(
+                child: new Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: new Container(
+                    decoration: new BoxDecoration(
+                      color: Colors.green[700],
+                      borderRadius: new BorderRadius.all(new Radius.circular(12.0))
+                    ),
+                    child: new Center(
+                      heightFactor: 5.0,
+                      child: new Text(_bottomMessage,
+                        textAlign: TextAlign.center,
+                        style: new TextStyle(
+                          fontFamily: "RobotoCondensed",
+                          fontSize: 22.0,
+                          color: Colors.white
+                        )
+                      )
+                    ),
+                  ),
+                )
+              )
+            ]
           ),
-        ))
-      ]),
-      appBar: new AppBar(
-        elevation: 0.0,
-        title: new Text(
-          _hideTopMessage ? "" : _topMessage,
-          textAlign: TextAlign.center,
-          style: new TextStyle(
-              fontFamily: "RobotoCondensed",
-              fontSize: 24.0,
-              fontWeight: FontWeight.w600),
         ),
-        actions: <Widget>[
-          new PopupMenuButton<MenuChoices>(
-              onSelected: (MenuChoices result) {
-                setState(() {
-                  if (result == MenuChoices.refresh) {
-                    _getInfoBoard();
-                  } else if (result == MenuChoices.settings) {
-                    Navigator.push(
+        _hideTopMessage ? new Scaffold(
+          backgroundColor: new Color(0xFFFFFF),
+          appBar: new AppBar(
+            backgroundColor: new Color(0xFFFFFF),
+            elevation: 0.0,
+            actions: <Widget>[
+              new PopupMenuButton<MenuChoices>(
+                onSelected: (MenuChoices result) {
+                  setState(() {
+                    if (result == MenuChoices.refresh) {
+                      _getInfoBoard();
+                    } else if (result == MenuChoices.settings) {
+                      Navigator.push(
                         context,
                         new MaterialPageRoute(
-                            builder: (context) => new SettingsPage()));
-                  }
-                });
-              },
-              itemBuilder: (BuildContext context) =>
+                          builder: (context) => new SettingsPage()
+                        )
+                      );
+                    }
+                  });
+                },
+                itemBuilder: (BuildContext context) =>
                   <PopupMenuEntry<MenuChoices>>[
                     new PopupMenuItem<MenuChoices>(
                       value: MenuChoices.refresh,
@@ -192,14 +258,19 @@ class _InfoBoardState extends State<InfoBoard> {
                       ),
                     ),
                     new PopupMenuItem<MenuChoices>(
-                        value: MenuChoices.settings,
-                        child: new ListTile(
-                            leading: new Icon(Icons.settings),
-                            title: new Text("SETTINGS")))
-                  ]),
-        ],
-      ),
-    ));
+                      value: MenuChoices.settings,
+                      child: new ListTile(
+                        leading: new Icon(Icons.settings),
+                        title: new Text("SETTINGS")
+                      )
+                    )
+                  ]
+              ),
+            ],
+          ),
+        ) : new Container()
+      ]
+    );
   }
 }
 
@@ -227,8 +298,9 @@ class PeriodWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var paddingMultiplier = _hideTopMessage ? 2.5 : 2.0;
     return new Padding(
-        padding: new EdgeInsets.all(_periods.length * 2.0),
+        padding: new EdgeInsets.all(_periods.length * paddingMultiplier),
         child: new Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -267,33 +339,8 @@ List<Period> getPeriods(List<List<String>> periodsList) {
 
 class _SettingsPageState extends State<SettingsPage> {
 
-  void createCustomPeriodNameFields() {
-    if (_enableCustomPeriodNames && _customPeriodNameFields.length != 4) {
-      List<String> periodNames = [
-        "Period 1",
-        "Period 2",
-        "Period 3",
-        "Period 4"
-      ];
+  void setCustomPeriodNames() {
 
-      for (int i = 0; i < periodNames.length; i++) {
-        _customPeriodNames.add(new CustomPeriodName(periodNames[i], ""));
-        _customPeriodNameFields.add(new ListTile(
-          title: new TextFormField(
-            controller: new TextEditingController(
-              text: _customPeriodNames[i].customName
-            ),
-            decoration: new InputDecoration(labelText: periodNames[i]),
-            onFieldSubmitted: (String customName) {
-              _customPeriodNames[i].customName = customName;
-              print("Custom Period 1 Name: " + _customPeriodNames[0].customName);
-            }
-          ),
-        ));
-      }
-    } else if (!_enableCustomPeriodNames && _customPeriodNameFields.length != 0) {
-      _customPeriodNameFields = [];
-    }
   }
 
   @override
@@ -328,7 +375,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 onChanged: (bool newValue) {
                   setState(() {
                     _enableCustomPeriodNames = newValue;
-                    createCustomPeriodNameFields();
                   });
                 },
                 activeColor: Colors.green,
@@ -355,9 +401,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   )
                 : new Container(),
             _enableCustomPeriodNames ? divider : new Container(),
-            new Column(
-              children: _customPeriodNameFields
-            )
           ],
         ));
   }
