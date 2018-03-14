@@ -5,6 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'period.dart';
 
+String _topMessage = "TOP MESSAGE";
+String _bottomMessage = "BOTTOM MESSAGE";
+String _image1Url = "";
+String _image2Url = "";
+List<Period> _periods = [];
+
+final String graphicsBaseUrl = "http://splash.tdchristian.ca/apps/infoboard/";
+
 void main() {
   runApp(new MyApp());
 }
@@ -13,28 +21,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      home: new MyHomePage(),
+      home: new InfoBoard(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
+class InfoBoard extends StatefulWidget {
+  InfoBoard({Key key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _InfoBoardState createState() => new _InfoBoardState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-
-  String _topMessage = "TOP MESSAGE";
-  String _bottomMessage = "BOTTOM MESSAGE";
-  String _image1Url = "";
-  String _image2Url = "";
-  List<Period> _periods = [];
-
-  final String graphicsBaseUrl = "http://splash.tdchristian.ca/apps/infoboard/";
-
+class _InfoBoardState extends State<InfoBoard> {
 
   _getInfoBoard() async {
 
@@ -66,7 +65,6 @@ class _MyHomePageState extends State<MyHomePage> {
     if (!mounted) return;
 
     setState(() {
-      _getInfoBoard();
       _topMessage = topMessage;
       _bottomMessage = bottomMessage;
       _periods = periods;
@@ -88,6 +86,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    _getInfoBoard();
+
     return new Container(
       child: new Scaffold(
         backgroundColor: Colors.green,
@@ -157,6 +158,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+
 
 class PeriodWidget extends StatelessWidget {
   
