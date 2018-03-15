@@ -4,7 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'period.dart';
+import 'Period.dart';
+import 'SettingsPage.dart';
 
 String _topMessage = "TOP MESSAGE";
 String _bottomMessage = "BOTTOM MESSAGE";
@@ -13,30 +14,24 @@ String _image2Url = "";
 final String graphicsBaseUrl = "http://splash.tdchristian.ca/apps/infoboard/";
 
 List<Period> _periods = [];
-bool _grade9Mode = false;
-bool _hideTopMessage = false;
-bool _enableCustomPeriodNames = false;
+bool grade9Mode = false;
+bool hideTopMessage = false;
+bool enableCustomPeriodNames = false;
 final List<String> periodNames = [
-  "Period 1",
-  "Period 2",
-  "Period 3",
-  "Period 4"
+  "PERIOD 1",
+  "PERIOD 2",
+  "PERIOD 3",
+  "PERIOD 4"
 ];
-List<CustomPeriod> _customPeriods;
-List<CustomPeriod> _customPeriodsGrade9;
-Row _customPeriodNameFields;
+
+final List<String> customPeriodNames = [
+  "PERIOD 1",
+  "PERIOD 2",
+  "PERIOD 3",
+  "PERIOD 4"
+];
 
 enum MenuChoices { refresh, settings }
-
-class CustomPeriod {
-  String originalName;
-  String customName;
-
-  CustomPeriod(String _originalName, String _customName) {
-    this.originalName = _originalName;
-    this.customName = _customName;
-  }
-}
 
 void main() {
   runApp(new MyApp());
@@ -47,16 +42,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-        home: new InfoBoard(),
-        theme: new ThemeData(primaryColor: Colors.green));
+      home: new InfoBoard(),
+      theme: new ThemeData(primaryColor: Colors.green));
   }
-}
-
-class SettingsPage extends StatefulWidget {
-  SettingsPage({Key key}) : super(key: key);
-
-  @override
-  _SettingsPageState createState() => new _SettingsPageState();
 }
 
 class InfoBoard extends StatefulWidget {
@@ -70,7 +58,7 @@ class _InfoBoardState extends State<InfoBoard> {
 
   _getInfoBoard() async {
     final String url =
-        'http://splash.tdchristian.ca/apps/if2/getScreenData.php';
+      'http://splash.tdchristian.ca/apps/if2/getScreenData.php';
     HttpClient httpClient = new HttpClient();
 
     String topMessage;
@@ -121,14 +109,14 @@ class _InfoBoardState extends State<InfoBoard> {
   Widget build(BuildContext context) {
     _getInfoBoard();
 
-    _topMessage = "TOP MESSAGE";
-    _bottomMessage = "BOTTOM MESSAGE";
+    _topMessage = _topMessage == "" ? "NO SCHOOL TODAY" : _topMessage;
+    _bottomMessage = _bottomMessage == "" ? "NO MESSAGE": _bottomMessage;
 
     AppBar appBar = new AppBar(
       elevation: 0.0,
       backgroundColor: new Color(0xFFFFFF),
       title: new Text(
-        _hideTopMessage ? "" : _topMessage,
+        hideTopMessage ? "" : _topMessage,
         textAlign: TextAlign.center,
         style: new TextStyle(
           fontFamily: "RobotoCondensed",
@@ -172,15 +160,35 @@ class _InfoBoardState extends State<InfoBoard> {
         ),
       ],
     );
+
+    Image image1;
+    Image image2;
+
+    try {
+      image1 = new Image.network(
+        _image1Url != ""
+            ? graphicsBaseUrl + _image1Url
+            : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
+        height: 100.0,
+      );
+      image2 = new Image.network(
+        _image2Url != ""
+            ? graphicsBaseUrl + _image2Url
+            : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
+        height: 100.0);
+    } catch (exception) {
+      print(exception);
+    }
+    
     
     return new Stack(
       children: <Widget>[
         new Scaffold(
-          appBar: _hideTopMessage ? null : appBar,
+          appBar: hideTopMessage ? null : appBar,
           backgroundColor: Colors.green,
           body: new Column(
             children: [
-              _hideTopMessage ? new SizedBox(
+              hideTopMessage ? new SizedBox(
                 height: 30.0
               ) : new Container(),
               new Column(
@@ -189,17 +197,8 @@ class _InfoBoardState extends State<InfoBoard> {
               new Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  new Image.network(
-                    _image1Url != ""
-                        ? graphicsBaseUrl + _image1Url
-                        : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
-                    height: 100.0,
-                  ),
-                  new Image.network(
-                      _image2Url != ""
-                          ? graphicsBaseUrl + _image2Url
-                          : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
-                      height: 100.0),
+                  image1,
+                  image2
                 ],
               ),
               new Expanded(
@@ -227,7 +226,7 @@ class _InfoBoardState extends State<InfoBoard> {
             ]
           ),
         ),
-        _hideTopMessage ? new Scaffold(
+        hideTopMessage ? new Scaffold(
           backgroundColor: new Color(0xFFFFFF),
           appBar: new AppBar(
             backgroundColor: new Color(0xFFFFFF),
@@ -298,110 +297,74 @@ class PeriodWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var paddingMultiplier = _hideTopMessage ? 2.5 : 2.0;
-    return new Padding(
-        padding: new EdgeInsets.all(_periods.length * paddingMultiplier),
-        child: new Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              new Text(_period.name,
-                  style: new TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontFamily: "RobotoCondensed",
-                      fontSize: 24.0,
-                      color: Colors.white),
-                  textAlign: TextAlign.center),
-              new Text(
-                  change24HourTo12Hour(_period.startTime) +
-                      " - " +
-                      change24HourTo12Hour(_period.endTime),
-                  style: new TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontFamily: "RobotoCondensed",
-                      fontSize: 24.0,
-                      color: Colors.white),
-                  textAlign: TextAlign.center),
-            ]));
-  }
-}
+    var paddingMultiplier = hideTopMessage ? 2.5 : 2.0;
 
-List<Period> getPeriods(List<List<String>> periodsList) {
-  List<Period> periods = [];
+    String name = _period.name;
 
-  if (periodsList.length > 0) {
-    for (var p in periodsList) {
-      periods.add(new Period(p[0], p[1], p[2]));
+    if (enableCustomPeriodNames) {
+      for (int i = 0; i < periodNames.length; i++) {
+        if (_period.name.contains(periodNames[i])) {
+          name = customPeriodNames[i]; 
+        }
+      }    
     }
-  }
 
-  return periods;
-}
-
-class _SettingsPageState extends State<SettingsPage> {
-
-  void setCustomPeriodNames() {
-
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Divider divider = new Divider();
-
-    return new Scaffold(
-        appBar: new AppBar(
-          title: new Text('Settings'),
-          elevation: 0.0,
-        ),
-        body: new ListView(
-          children: <Widget>[
-            new SizedBox(height: 8.0),
-            new ListTile(
-              title: new Text("Hide Day 1/Day 2 Message"),
-              trailing: new Switch(
-                value: _hideTopMessage,
-                onChanged: (bool newValue) {
-                  setState(() {
-                    _hideTopMessage = newValue;
-                  });
-                },
-                activeColor: Colors.green,
-              ),
+    
+    double padding = _periods.length * paddingMultiplier;
+    return new Padding(
+      padding: new EdgeInsets.only(top: padding, bottom: padding),
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          new Text(name.toUpperCase(),
+            style: new TextStyle(
+              fontWeight: FontWeight.w600,
+              fontFamily: "RobotoCondensed",
+              fontSize: 24.0,
+              color: Colors.white
             ),
-            divider,
-            new ListTile(
-              title: new Text("Enable custom period names"),
-              trailing: new Switch(
-                value: _enableCustomPeriodNames,
-                onChanged: (bool newValue) {
-                  setState(() {
-                    _enableCustomPeriodNames = newValue;
-                  });
-                },
-                activeColor: Colors.green,
-              ),
+            textAlign: TextAlign.center
+          ),
+          new Text(
+            change24HourTo12Hour(_period.startTime) +
+              " - " +
+              change24HourTo12Hour(_period.endTime),
+            style: new TextStyle(
+              fontWeight: FontWeight.w600,
+              fontFamily: "RobotoCondensed",
+              fontSize: 24.0,
+              color: Colors.white
             ),
-            divider,
-            _enableCustomPeriodNames
-                ? new ListTile(
-                    enabled: _enableCustomPeriodNames,
-                    title: new Text("Enable Grade 9 Mode"),
-                    subtitle: new Padding(
-                        padding: new EdgeInsets.only(top: 3.0),
-                        child: new Text(
-                            "This will enable changing Day 1 & 2 classes")),
-                    trailing: new Switch(
-                      value: _grade9Mode,
-                      onChanged: (bool newValue) {
-                        setState(() {
-                          _grade9Mode = newValue;
-                        });
-                      },
-                      activeColor: Colors.green,
-                    ),
-                  )
-                : new Container(),
-            _enableCustomPeriodNames ? divider : new Container(),
-          ],
-        ));
+            textAlign: TextAlign.center
+          ),
+        ]
+      )
+    );
   }
 }
+Widget getCustomPeriodsFields() {
+
+  List<Widget> periodFields = [];
+
+  if (enableCustomPeriodNames && !grade9Mode) {
+    for (int i = 0; i < periodNames.length; i++) {
+      periodFields.add(new ListTile(
+        title: new TextField(
+          decoration: new InputDecoration(
+            labelText: periodNames[i],
+            hintText: customPeriodNames[i] ),
+          onChanged: (String input) {
+            customPeriodNames[i] = input;
+          },
+        )
+      ));
+    }
+  } else if (enableCustomPeriodNames && grade9Mode) {
+    
+  }
+
+  return new Column(
+    children: periodFields
+  );
+}
+
