@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'Period.dart';
 import 'SettingsPage.dart';
@@ -14,9 +16,7 @@ String _image2Url = "";
 final String graphicsBaseUrl = "http://splash.tdchristian.ca/apps/infoboard/";
 
 List<Period> _periods = [];
-bool grade9Mode = false;
-bool hideTopMessage = false;
-bool enableCustomPeriodNames = false;
+
 final List<String> periodNames = [
   "PERIOD 1",
   "PERIOD 2",
@@ -24,7 +24,18 @@ final List<String> periodNames = [
   "PERIOD 4"
 ];
 
-final List<String> customPeriodNames = [
+bool grade9Mode;
+bool hideTopMessage = false;
+bool enableCustomPeriodNames = false;
+
+List<String> customPeriodNames = [
+  "PERIOD 1",
+  "PERIOD 2",
+  "PERIOD 3",
+  "PERIOD 4"
+];
+
+List<String> customPeriodNamesDay2 = [
   "PERIOD 1",
   "PERIOD 2",
   "PERIOD 3",
@@ -42,6 +53,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
+      title: "TDChristian InfoBoard",
       home: new InfoBoard(),
       theme: new ThemeData(primaryColor: Colors.green));
   }
@@ -55,6 +67,13 @@ class InfoBoard extends StatefulWidget {
 }
 
 class _InfoBoardState extends State<InfoBoard> {
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserData();
+    _getInfoBoard();
+  }
 
   _getInfoBoard() async {
     final String url =
@@ -105,17 +124,54 @@ class _InfoBoardState extends State<InfoBoard> {
     return periods;
   }
 
+  _getUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    grade9Mode = prefs.getBool('grade9Mode') ?? false;
+    hideTopMessage = prefs.getBool('hideTopMessage') ?? false;
+    enableCustomPeriodNames = prefs.getBool('enableCustomPeriodNames') ?? false;
+    customPeriodNames = prefs.getStringList('customPeriodNames') ?? [
+      "PERIOD 1",
+      "PERIOD 2",
+      "PERIOD 3",
+      "PERIOD 4"
+    ];
+
+    customPeriodNamesDay2 = prefs.getStringList('customPeriodNames2') ?? [
+      "PERIOD 1",
+      "PERIOD 2",
+      "PERIOD 3",
+      "PERIOD 4"
+    ];
+
+  }
+
+  _saveValues() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('grade9Mode', grade9Mode);
+    prefs.setBool('hideTopMessage', hideTopMessage);
+    prefs.setBool('enableCustomPeriodNames', enableCustomPeriodNames);
+    prefs.setStringList('customPeriodNames', customPeriodNames);
+    prefs.setStringList('customPeriodNamesDay2', customPeriodNamesDay2);
+  }
+
   @override
   Widget build(BuildContext context) {
-    _getInfoBoard();
+    // _getInfoBoard();
 
     _topMessage = _topMessage == "" ? "NO SCHOOL TODAY" : _topMessage;
     _bottomMessage = _bottomMessage == "" ? "NO MESSAGE": _bottomMessage;
 
+    
+    _saveValues();
+    _getUserData();
+
     AppBar appBar = new AppBar(
       elevation: 0.0,
       backgroundColor: new Color(0xFFFFFF),
-      title: new Text(
+      title: new Padding(
+        padding: new EdgeInsets.only(left: 24.0),
+        child: new Text(
+        
         hideTopMessage ? "" : _topMessage,
         textAlign: TextAlign.center,
         style: new TextStyle(
@@ -123,6 +179,7 @@ class _InfoBoardState extends State<InfoBoard> {
           fontSize: 24.0,
           fontWeight: FontWeight.w600
         ),
+      )
       ),
       actions: <Widget>[
         new PopupMenuButton<MenuChoices>(
@@ -302,41 +359,59 @@ class PeriodWidget extends StatelessWidget {
     String name = _period.name;
 
     if (enableCustomPeriodNames) {
-      for (int i = 0; i < periodNames.length; i++) {
-        if (_period.name.contains(periodNames[i])) {
-          name = customPeriodNames[i]; 
+      if (!grade9Mode || _topMessage.contains("DAY 1")) {
+        for (int i = 0; i < periodNames.length; i++) {
+          if (_period.name.contains(periodNames[i])) {
+            name = customPeriodNames[i]; 
+          }
+        }  
+      } else {
+        if (grade9Mode && _topMessage.contains("DAY 2")) {
+          for (int i = 0; i < periodNames.length; i++) {
+            if (_period.name.contains(periodNames[i])) {
+              name = customPeriodNamesDay2[i]; 
+            }
+          }  
         }
-      }    
+      }
+        
     }
 
     
     double padding = _periods.length * paddingMultiplier;
     return new Padding(
-      padding: new EdgeInsets.only(top: padding, bottom: padding),
+      padding: new EdgeInsets.only(top: padding, bottom: padding, left: 40.0, right: 35.0),
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          new Text(name.toUpperCase(),
+            new Text(name.toUpperCase(),
             style: new TextStyle(
               fontWeight: FontWeight.w600,
               fontFamily: "RobotoCondensed",
               fontSize: 24.0,
               color: Colors.white
             ),
-            textAlign: TextAlign.center
+            textAlign: TextAlign.left
           ),
-          new Text(
-            change24HourTo12Hour(_period.startTime) +
-              " - " +
-              change24HourTo12Hour(_period.endTime),
-            style: new TextStyle(
-              fontWeight: FontWeight.w600,
-              fontFamily: "RobotoCondensed",
-              fontSize: 24.0,
-              color: Colors.white
+          new Expanded(
+            child: new Container(),
+          ),
+          new Container(
+            width: 120.0,
+            child: new Text(
+              change24HourTo12Hour(_period.startTime) +
+                " - " +
+                change24HourTo12Hour(_period.endTime),
+              style: new TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "RobotoCondensed",
+                fontSize: 24.0,
+                color: Colors.white
+              ),
+              textAlign: TextAlign.left
             ),
-            textAlign: TextAlign.center
-          ),
+          )
+          ,
         ]
       )
     );
@@ -346,21 +421,74 @@ Widget getCustomPeriodsFields() {
 
   List<Widget> periodFields = [];
 
-  if (enableCustomPeriodNames && !grade9Mode) {
+  if (enableCustomPeriodNames) {
     for (int i = 0; i < periodNames.length; i++) {
+
       periodFields.add(new ListTile(
+        dense: true,
+        leading: new Text(
+          periodNames[i],
+          style: new TextStyle(
+            fontSize: 12.0
+          ),),
         title: new TextField(
           decoration: new InputDecoration(
-            labelText: periodNames[i],
-            hintText: customPeriodNames[i] ),
+            labelText: customPeriodNames[i],
+            labelStyle: new TextStyle(
+              color: Colors.black
+            )
+          ),
           onChanged: (String input) {
             customPeriodNames[i] = input;
           },
-        )
+        ),
       ));
     }
-  } else if (enableCustomPeriodNames && grade9Mode) {
-    
+  }
+  if (grade9Mode) {
+
+    periodFields.insert(0, new Padding(
+      padding: new EdgeInsets.only(top: 8.0),
+      child: new Text("DAY 1",
+      style: new TextStyle(
+        fontSize: 20.0,
+        color: Colors.black87
+      )
+    )));
+    periodFields.add( new SizedBox(
+      height: 16.0,
+    ));
+    periodFields.add( new Divider());
+    periodFields.add(new Padding(
+      padding: new EdgeInsets.only(top: 8.0),
+      child: new Text("DAY 2",
+      style: new TextStyle(
+        fontSize: 20.0,
+        color: Colors.black87
+      )
+    )));
+
+    for (int i = 0; i < periodNames.length; i++) {
+
+      periodFields.add(new ListTile(
+        dense: true,
+        leading: new Text(
+          periodNames[i],
+          style: new TextStyle(
+            fontSize: 12.0
+          ),),
+        title: new TextField(
+          decoration: new InputDecoration(
+            labelText: customPeriodNamesDay2[i],
+            labelStyle: new TextStyle(
+              color: Colors.black
+            )),
+          onChanged: (String input) {
+            customPeriodNamesDay2[i] = input;
+          },
+        ),
+      ));
+    }
   }
 
   return new Column(
