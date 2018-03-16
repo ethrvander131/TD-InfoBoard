@@ -1,14 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'period.dart';
-
-bool grade9Mode;
-bool hideTopMessage = false;
-bool enableCustomPeriodNames = false;
 
 String _topMessage = "TOP MESSAGE";
 String _bottomMessage = "BOTTOM MESSAGE";
@@ -16,8 +13,6 @@ String _image1Url = "";
 String _image2Url = "";
 final String graphicsBaseUrl = "http://splash.tdchristian.ca/apps/infoboard/";
 
-List<String> customPeriodNames;
-List<String> customPeriodNamesDay2;
 List<Period> _periods = [];
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -35,12 +30,28 @@ final List<String> periodNames = [
 ];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 final List<String> customPeriodNames = [
+=======
+bool grade9Mode;
+bool hideTopMessage = false;
+bool enableCustomPeriodNames = false;
+
+List<String> customPeriodNames = [
   "PERIOD 1",
   "PERIOD 2",
   "PERIOD 3",
   "PERIOD 4"
+];
+
+List<String> customPeriodNamesDay2 = [
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
+  "PERIOD 1",
+  "PERIOD 2",
+  "PERIOD 3",
+  "PERIOD 4"
+<<<<<<< HEAD
 =======
 bool _grade9Mode = false;
 bool _hideTopMessage = false;
@@ -57,6 +68,10 @@ List<CustomPeriod> _customPeriodsGrade9;
 Row _customPeriodNameFields;
 
 >>>>>>> parent of 19f805f... Data is now persistent, Grade 9 Mode works, cleaned up code
+=======
+];
+
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
 enum MenuChoices { refresh, settings }
 
 class CustomPeriod {
@@ -80,6 +95,7 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         title: "TDChristian InfoBoard",
         home: new InfoBoard(),
         theme: new ThemeData(primaryColor: Colors.green));
@@ -91,6 +107,11 @@ class MyApp extends StatelessWidget {
         home: new InfoBoard(),
         theme: new ThemeData(primaryColor: Colors.green));
 >>>>>>> parent of 83df8ed... Custom period names now work
+=======
+      title: "TDChristian InfoBoard",
+      home: new InfoBoard(),
+      theme: new ThemeData(primaryColor: Colors.green));
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
   }
 }
 
@@ -110,6 +131,10 @@ class InfoBoard extends StatefulWidget {
 
 class _InfoBoardState extends State<InfoBoard> {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
   @override
   void initState() {
     super.initState();
@@ -121,7 +146,7 @@ class _InfoBoardState extends State<InfoBoard> {
 
   _getInfoBoard() async {
     final String url =
-        'http://splash.tdchristian.ca/apps/if2/getScreenData.php';
+      'http://splash.tdchristian.ca/apps/if2/getScreenData.php';
     HttpClient httpClient = new HttpClient();
 
     String topMessage;
@@ -174,11 +199,20 @@ class _InfoBoardState extends State<InfoBoard> {
     grade9Mode = prefs.getBool('grade9Mode') ?? false;
     hideTopMessage = prefs.getBool('hideTopMessage') ?? false;
     enableCustomPeriodNames = prefs.getBool('enableCustomPeriodNames') ?? false;
-    customPeriodNames = prefs.getStringList('customPeriodNames') ??
-        ["PERIOD 1", "PERIOD 2", "PERIOD 3", "PERIOD 4"];
+    customPeriodNames = prefs.getStringList('customPeriodNames') ?? [
+      "PERIOD 1",
+      "PERIOD 2",
+      "PERIOD 3",
+      "PERIOD 4"
+    ];
 
-    customPeriodNamesDay2 = prefs.getStringList('customPeriodNames2') ??
-        ["PERIOD 1", "PERIOD 2", "PERIOD 3", "PERIOD 4"];
+    customPeriodNamesDay2 = prefs.getStringList('customPeriodNames2') ?? [
+      "PERIOD 1",
+      "PERIOD 2",
+      "PERIOD 3",
+      "PERIOD 4"
+    ];
+
   }
 
   _saveValues() async {
@@ -192,6 +226,7 @@ class _InfoBoardState extends State<InfoBoard> {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
 =======
   @override
   Widget build(BuildContext context) {
@@ -199,20 +234,31 @@ class _InfoBoardState extends State<InfoBoard> {
 
 <<<<<<< HEAD
 >>>>>>> parent of 19f805f... Data is now persistent, Grade 9 Mode works, cleaned up code
-    _topMessage = _topMessage == "" ? "NO SCHOOL TODAY" : _topMessage;
-    _bottomMessage = _bottomMessage == "" ? "NO MESSAGE" : _bottomMessage;
+=======
+    // _getInfoBoard();
 
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
+    _topMessage = _topMessage == "" ? "NO SCHOOL TODAY" : _topMessage;
+    _bottomMessage = _bottomMessage == "" ? "NO MESSAGE": _bottomMessage;
+
+<<<<<<< HEAD
 <<<<<<< HEAD
     _saveValues();
 =======
     _topMessage = "TOP MESSAGE";
     _bottomMessage = "BOTTOM MESSAGE";
 >>>>>>> parent of 83df8ed... Custom period names now work
+=======
+    
+    _saveValues();
+    _getUserData();
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
 
     AppBar appBar = new AppBar(
       elevation: 0.0,
       backgroundColor: new Color(0xFFFFFF),
       title: new Padding(
+<<<<<<< HEAD
           padding: new EdgeInsets.only(left: 24.0),
           child: new Text(
             hideTopMessage ? "" : _topMessage,
@@ -228,43 +274,59 @@ class _InfoBoardState extends State<InfoBoard> {
       backgroundColor: new Color(0xFFFFFF),
       title: new Text(
         _hideTopMessage ? "" : _topMessage,
+=======
+        padding: new EdgeInsets.only(left: 24.0),
+        child: new Text(
+        
+        hideTopMessage ? "" : _topMessage,
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
         textAlign: TextAlign.center,
         style: new TextStyle(
           fontFamily: "RobotoCondensed",
           fontSize: 24.0,
           fontWeight: FontWeight.w600
         ),
+<<<<<<< HEAD
       ),
 >>>>>>> parent of 19f805f... Data is now persistent, Grade 9 Mode works, cleaned up code
+=======
+      )
+      ),
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
       actions: <Widget>[
         new PopupMenuButton<MenuChoices>(
-            onSelected: (MenuChoices result) {
-              setState(() {
-                if (result == MenuChoices.refresh) {
-                  _getInfoBoard();
-                } else if (result == MenuChoices.settings) {
-                  Navigator.push(
-                      context,
-                      new MaterialPageRoute(
-                          builder: (context) => new SettingsPage()));
-                }
-              });
-            },
-            itemBuilder: (BuildContext context) =>
-                <PopupMenuEntry<MenuChoices>>[
-                  new PopupMenuItem<MenuChoices>(
-                    value: MenuChoices.refresh,
-                    child: new ListTile(
-                      leading: new Icon(Icons.refresh),
-                      title: new Text('REFRESH'),
-                    ),
-                  ),
-                  new PopupMenuItem<MenuChoices>(
-                      value: MenuChoices.settings,
-                      child: new ListTile(
-                          leading: new Icon(Icons.settings),
-                          title: new Text("SETTINGS")))
-                ]),
+          onSelected: (MenuChoices result) {
+            setState(() {
+              if (result == MenuChoices.refresh) {
+                _getInfoBoard();
+              } else if (result == MenuChoices.settings) {
+                Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                    builder: (context) => new SettingsPage()
+                  )
+                );
+              }
+            });
+          },
+          itemBuilder: (BuildContext context) =>
+            <PopupMenuEntry<MenuChoices>>[
+              new PopupMenuItem<MenuChoices>(
+                value: MenuChoices.refresh,
+                child: new ListTile(
+                  leading: new Icon(Icons.refresh),
+                  title: new Text('REFRESH'),
+                ),
+              ),
+              new PopupMenuItem<MenuChoices>(
+                value: MenuChoices.settings,
+                child: new ListTile(
+                  leading: new Icon(Icons.settings),
+                  title: new Text("SETTINGS")
+                )
+              )
+            ]
+        ),
       ],
     );
 <<<<<<< HEAD
@@ -280,43 +342,51 @@ class _InfoBoardState extends State<InfoBoard> {
         height: 100.0,
       );
       image2 = new Image.network(
-          _image2Url != ""
-              ? graphicsBaseUrl + _image2Url
-              : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
-          height: 100.0);
+        _image2Url != ""
+            ? graphicsBaseUrl + _image2Url
+            : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
+        height: 100.0);
     } catch (exception) {
       print(exception);
     }
-
-    return new Stack(children: <Widget>[
-      new Scaffold(
-        appBar: hideTopMessage ? null : appBar,
-        backgroundColor: Colors.green,
-        body: new Column(children: [
-          hideTopMessage ? new SizedBox(height: 30.0) : new Container(),
-          new Column(
-            children:
-                _periods.map((period) => new PeriodWidget(period)).toList(),
-          ),
-          new Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [image1, image2],
-          ),
-          new Expanded(
-              child: new Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: new Container(
-              decoration: new BoxDecoration(
-                  color: Colors.green[700],
-                  borderRadius:
-                      new BorderRadius.all(new Radius.circular(12.0))),
-              child: new Center(
-                  heightFactor: 5.0,
-                  child: new Text(_bottomMessage,
-                      textAlign: TextAlign.center,
-                      style: new TextStyle(
+    
+    
+    return new Stack(
+      children: <Widget>[
+        new Scaffold(
+          appBar: hideTopMessage ? null : appBar,
+          backgroundColor: Colors.green,
+          body: new Column(
+            children: [
+              hideTopMessage ? new SizedBox(
+                height: 30.0
+              ) : new Container(),
+              new Column(
+                children: _periods.map((period) => new PeriodWidget(period)).toList(),
+              ),
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  image1,
+                  image2
+                ],
+              ),
+              new Expanded(
+                child: new Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: new Container(
+                    decoration: new BoxDecoration(
+                      color: Colors.green[700],
+                      borderRadius: new BorderRadius.all(new Radius.circular(12.0))
+                    ),
+                    child: new Center(
+                      heightFactor: 5.0,
+                      child: new Text(_bottomMessage,
+                        textAlign: TextAlign.center,
+                        style: new TextStyle(
                           fontFamily: "RobotoCondensed",
                           fontSize: 22.0,
+<<<<<<< HEAD
                           color: Colors.white))),
             ),
           ))
@@ -404,6 +474,8 @@ class _InfoBoardState extends State<InfoBoard> {
                         style: new TextStyle(
                           fontFamily: "RobotoCondensed",
                           fontSize: 22.0,
+=======
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
                           color: Colors.white
                         )
                       )
@@ -414,7 +486,11 @@ class _InfoBoardState extends State<InfoBoard> {
             ]
           ),
         ),
+<<<<<<< HEAD
         _hideTopMessage ? new Scaffold(
+=======
+        hideTopMessage ? new Scaffold(
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
           backgroundColor: new Color(0xFFFFFF),
           appBar: new AppBar(
             backgroundColor: new Color(0xFFFFFF),
@@ -452,11 +528,16 @@ class _InfoBoardState extends State<InfoBoard> {
                       )
                     )
                   ]
+<<<<<<< HEAD
 >>>>>>> parent of 83df8ed... Custom period names now work
+=======
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
               ),
-            )
-          : new Container()
-    ]);
+            ],
+          ),
+        ) : new Container()
+      ]
+    );
   }
 }
 
@@ -491,19 +572,26 @@ class PeriodWidget extends StatelessWidget {
 
     if (enableCustomPeriodNames) {
 <<<<<<< HEAD
+<<<<<<< HEAD
        if (grade9Mode && _topMessage.contains("DAY 2")) {
+=======
+      if (!grade9Mode || _topMessage.contains("DAY 1")) {
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
         for (int i = 0; i < periodNames.length; i++) {
           if (_period.name.contains(periodNames[i])) {
-            name = customPeriodNamesDay2[i];
+            name = customPeriodNames[i]; 
           }
-        }
+        }  
       } else {
-        for (int i = 0; i < periodNames.length; i++) {
-          if (_period.name.contains(periodNames[i])) {
-            name = customPeriodNames[i];
-          }
+        if (grade9Mode && _topMessage.contains("DAY 2")) {
+          for (int i = 0; i < periodNames.length; i++) {
+            if (_period.name.contains(periodNames[i])) {
+              name = customPeriodNamesDay2[i]; 
+            }
+          }  
         }
       }
+<<<<<<< HEAD
 
 =======
       for (int i = 0; i < periodNames.length; i++) {
@@ -512,10 +600,15 @@ class PeriodWidget extends StatelessWidget {
         }
       }    
 >>>>>>> parent of 19f805f... Data is now persistent, Grade 9 Mode works, cleaned up code
+=======
+        
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
     }
 
+    
     double padding = _periods.length * paddingMultiplier;
     return new Padding(
+<<<<<<< HEAD
 <<<<<<< HEAD
         padding: new EdgeInsets.only(
             top: padding, bottom: padding, left: 40.0, right: 35.0),
@@ -586,25 +679,67 @@ class PeriodWidget extends StatelessWidget {
       )
     );
 >>>>>>> parent of 19f805f... Data is now persistent, Grade 9 Mode works, cleaned up code
+=======
+      padding: new EdgeInsets.only(top: padding, bottom: padding, left: 40.0, right: 35.0),
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+            new Text(name.toUpperCase(),
+            style: new TextStyle(
+              fontWeight: FontWeight.w600,
+              fontFamily: "RobotoCondensed",
+              fontSize: 24.0,
+              color: Colors.white
+            ),
+            textAlign: TextAlign.left
+          ),
+          new Expanded(
+            child: new Container(),
+          ),
+          new Container(
+            width: 120.0,
+            child: new Text(
+              change24HourTo12Hour(_period.startTime) +
+                " - " +
+                change24HourTo12Hour(_period.endTime),
+              style: new TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "RobotoCondensed",
+                fontSize: 24.0,
+                color: Colors.white
+              ),
+              textAlign: TextAlign.left
+            ),
+          )
+          ,
+        ]
+      )
+    );
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
   }
 }
-
 Widget getCustomPeriodsFields() {
+
   List<Widget> periodFields = [];
 
   if (enableCustomPeriodNames && !grade9Mode) {
     for (int i = 0; i < periodNames.length; i++) {
+
       periodFields.add(new ListTile(
 <<<<<<< HEAD
         dense: true,
         leading: new Text(
           periodNames[i],
-          style: new TextStyle(fontSize: 12.0),
-        ),
+          style: new TextStyle(
+            fontSize: 12.0
+          ),),
         title: new TextField(
           decoration: new InputDecoration(
-              labelText: customPeriodNames[i],
-              labelStyle: new TextStyle(color: Colors.black87)),
+            labelText: customPeriodNames[i],
+            labelStyle: new TextStyle(
+              color: Colors.black
+            )
+          ),
           onChanged: (String input) {
             customPeriodNames[i] = input;
           },
@@ -613,32 +748,43 @@ Widget getCustomPeriodsFields() {
     }
   }
   if (grade9Mode) {
-    periodFields.insert(
-        0,
-        new Padding(
-            padding: new EdgeInsets.only(top: 8.0),
-            child: new Text("DAY 1",
-                style: new TextStyle(fontSize: 16.0, color: Colors.black54))));
-    periodFields.add(new SizedBox(
+
+    periodFields.insert(0, new Padding(
+      padding: new EdgeInsets.only(top: 8.0),
+      child: new Text("DAY 1",
+      style: new TextStyle(
+        fontSize: 20.0,
+        color: Colors.black87
+      )
+    )));
+    periodFields.add( new SizedBox(
       height: 16.0,
     ));
-    periodFields.add(new Divider());
+    periodFields.add( new Divider());
     periodFields.add(new Padding(
-        padding: new EdgeInsets.only(top: 8.0),
-        child: new Text("DAY 2",
-            style: new TextStyle(fontSize: 16.0, color: Colors.black54))));
+      padding: new EdgeInsets.only(top: 8.0),
+      child: new Text("DAY 2",
+      style: new TextStyle(
+        fontSize: 20.0,
+        color: Colors.black87
+      )
+    )));
 
     for (int i = 0; i < periodNames.length; i++) {
+
       periodFields.add(new ListTile(
         dense: true,
         leading: new Text(
           periodNames[i],
-          style: new TextStyle(fontSize: 12.0),
-        ),
+          style: new TextStyle(
+            fontSize: 12.0
+          ),),
         title: new TextField(
           decoration: new InputDecoration(
-              labelText: customPeriodNamesDay2[i],
-              labelStyle: new TextStyle(color: Colors.black87)),
+            labelText: customPeriodNamesDay2[i],
+            labelStyle: new TextStyle(
+              color: Colors.black
+            )),
           onChanged: (String input) {
             customPeriodNamesDay2[i] = input;
           },
@@ -680,6 +826,7 @@ List<Period> getPeriods(List<List<String>> periodsList) {
     }
   }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   return new Column(children: periodFields);
 }
@@ -756,3 +903,10 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 }
 >>>>>>> parent of 83df8ed... Custom period names now work
+=======
+  return new Column(
+    children: periodFields
+  );
+}
+
+>>>>>>> parent of 0812292... Added donation ListTile in Settings

@@ -1,7 +1,14 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> parent of 83df8ed... Custom period names now work
+=======
+
+import 'package:flutter/material.dart';
+import 'main.dart';
+
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
 class Period {
   String name;
   String startTime;
@@ -38,6 +45,10 @@ List<Period> getPeriods(List<List<String>> periodsList) {
 
   return periods;
 }
+<<<<<<< HEAD
 =======
 }
 >>>>>>> parent of 83df8ed... Custom period names now work
+=======
+
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
