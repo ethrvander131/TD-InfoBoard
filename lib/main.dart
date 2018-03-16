@@ -199,43 +199,51 @@ class _InfoBoardState extends State<InfoBoard> {
       print(exception);
     }
 
-    return new Stack(children: <Widget>[
+    return new Stack(children: [
       new Scaffold(
         appBar: hideTopMessage ? null : appBar,
         backgroundColor: Colors.green,
-        body: new Column(children: [
-          hideTopMessage ? new SizedBox(height: 45.0) : new Container(),
-          new Column(
-            children:
-                _periods.map((period) => new PeriodWidget(period)).toList(),
-          ),
-          new Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [image1, image2],
-          ),
-          new Expanded(
-              child: new Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: new Container(
-              decoration: new BoxDecoration(
-                  color: Colors.green[700],
-                  borderRadius:
-                      new BorderRadius.all(new Radius.circular(30.0))),
-              child: new Center(
-                  heightFactor: 5.0,
-                  child: new Text(_bottomMessage,
-                      textAlign: TextAlign.center,
-                      style: new TextStyle(
-                          fontFamily: "RobotoCondensed",
-                          fontSize: 22.0,
-                          color: Colors.white))),
-            ),
-          ))
-        ]),
+        body: new Padding(
+          padding: new EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+            child: new Column(
+              children: [
+                hideTopMessage ? new SizedBox(height: 36.0) : new Container(),
+                new Expanded(
+                  child: new Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children:
+                      _periods.map((period) => new PeriodWidget(period)).toList()
+                  )
+                ),
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [image1, image2],
+                ),
+                new Padding(
+                  padding: const EdgeInsets.only(top: 12.0),
+                    child: new Container(
+                      decoration: new BoxDecoration(
+                        color: Colors.green[700],
+                        borderRadius:
+                          new BorderRadius.all(new Radius.circular(30.0))),
+                      child: new Center(
+                        heightFactor: 4.0,
+                        child: new Text(_bottomMessage,
+                          textAlign: TextAlign.center,
+                          style: new TextStyle(
+                            fontFamily: "RobotoCondensed",
+                            fontSize: 22.0,
+                            color: Colors.white
+                          )
+                        )
+                      )
+                    )
+                )
+              ])
+            )
       ),
-      hideTopMessage
-          ? new Scaffold(
-              backgroundColor: new Color(0xFFFFFF),
+      hideTopMessage ? new Scaffold(
+        backgroundColor: new Color(0xFFFFFF),
               appBar: new AppBar(
                 backgroundColor: new Color(0xFFFFFF),
                 elevation: 0.0,
@@ -300,7 +308,6 @@ class PeriodWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var paddingMultiplier = hideTopMessage ? 2.0 : 1.5;
 
     String name = _period.name;
 
@@ -321,10 +328,9 @@ class PeriodWidget extends StatelessWidget {
 
     }
 
-    double padding = _periods.length * paddingMultiplier;
     return new Padding(
         padding: new EdgeInsets.only(
-            top: padding, bottom: padding, left: 25.0, right: 25.0),
+            left: 8.0, right: 8.0),
         child: new Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -340,7 +346,6 @@ class PeriodWidget extends StatelessWidget {
                   textAlign: TextAlign.left)
               ),
               new Container(
-                width: 120.0,
                 child: new Text(
                     change24HourTo12Hour(_period.startTime) +
                         " - " +
