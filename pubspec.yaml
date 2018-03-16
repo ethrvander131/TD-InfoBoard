@@ -7,9 +7,15 @@ dependencies:
 
   http: ^0.11.3
   intl: "^0.15.2"
+<<<<<<< HEAD
   path_provider: "^0.4.0"
   shared_preferences: "^0.4.0"
+<<<<<<< HEAD
   url_launcher: "^3.0.0"
+=======
+>>>>>>> parent of 19f805f... Data is now persistent, Grade 9 Mode works, cleaned up code
+=======
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

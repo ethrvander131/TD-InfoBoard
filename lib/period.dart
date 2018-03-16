@@ -1,19 +1,29 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> parent of 83df8ed... Custom period names now work
+=======
+
+import 'package:flutter/material.dart';
+import 'main.dart';
+
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
 class Period {
   String name;
   String startTime;
   String endTime;
-  String customName;
 
   Period(String _name, String _startTime, String _endTime) {
     this.name = _name;
     this.startTime = _startTime;
     this.endTime = _endTime;
-    this.customName = "";
   }
 
   printPeriod() {
     print('$name: $startTime - $endTime');
   }
+<<<<<<< HEAD
 
   void setCustomName(String newName) {
     customName = newName;
@@ -35,3 +45,10 @@ List<Period> getPeriods(List<List<String>> periodsList) {
 
   return periods;
 }
+<<<<<<< HEAD
+=======
+}
+>>>>>>> parent of 83df8ed... Custom period names now work
+=======
+
+>>>>>>> parent of 0812292... Added donation ListTile in Settings
