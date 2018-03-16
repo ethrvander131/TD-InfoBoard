@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'Period.dart';
 import 'SettingsPage.dart';
@@ -21,7 +20,13 @@ final String graphicsBaseUrl = "http://splash.tdchristian.ca/apps/infoboard/";
 List<String> customPeriodNames;
 List<String> customPeriodNamesDay2;
 List<Period> _periods = [];
+<<<<<<< HEAD
 
+=======
+bool grade9Mode = false;
+bool hideTopMessage = false;
+bool enableCustomPeriodNames = false;
+>>>>>>> parent of 19f805f... Data is now persistent, Grade 9 Mode works, cleaned up code
 final List<String> periodNames = [
   "PERIOD 1",
   "PERIOD 2",
@@ -29,6 +34,16 @@ final List<String> periodNames = [
   "PERIOD 4"
 ];
 
+<<<<<<< HEAD
+=======
+final List<String> customPeriodNames = [
+  "PERIOD 1",
+  "PERIOD 2",
+  "PERIOD 3",
+  "PERIOD 4"
+];
+
+>>>>>>> parent of 19f805f... Data is now persistent, Grade 9 Mode works, cleaned up code
 enum MenuChoices { refresh, settings }
 
 void main() {
@@ -40,9 +55,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
+<<<<<<< HEAD
         title: "TDChristian InfoBoard",
         home: new InfoBoard(),
         theme: new ThemeData(primaryColor: Colors.green));
+=======
+      home: new InfoBoard(),
+      theme: new ThemeData(primaryColor: Colors.green));
+>>>>>>> parent of 19f805f... Data is now persistent, Grade 9 Mode works, cleaned up code
   }
 }
 
@@ -54,12 +74,15 @@ class InfoBoard extends StatefulWidget {
 }
 
 class _InfoBoardState extends State<InfoBoard> {
+<<<<<<< HEAD
   @override
   void initState() {
     super.initState();
     _getUserData();
     _getInfoBoard();
   }
+=======
+>>>>>>> parent of 19f805f... Data is now persistent, Grade 9 Mode works, cleaned up code
 
   _getInfoBoard() async {
     final String url =
@@ -110,6 +133,7 @@ class _InfoBoardState extends State<InfoBoard> {
     return periods;
   }
 
+<<<<<<< HEAD
   _getUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     grade9Mode = prefs.getBool('grade9Mode') ?? false;
@@ -133,9 +157,16 @@ class _InfoBoardState extends State<InfoBoard> {
 
   @override
   Widget build(BuildContext context) {
+=======
+  @override
+  Widget build(BuildContext context) {
+    _getInfoBoard();
+
+>>>>>>> parent of 19f805f... Data is now persistent, Grade 9 Mode works, cleaned up code
     _topMessage = _topMessage == "" ? "NO SCHOOL TODAY" : _topMessage;
     _bottomMessage = _bottomMessage == "" ? "NO MESSAGE" : _bottomMessage;
 
+<<<<<<< HEAD
     _saveValues();
 
     AppBar appBar = new AppBar(
@@ -151,6 +182,20 @@ class _InfoBoardState extends State<InfoBoard> {
                 fontSize: 24.0,
                 fontWeight: FontWeight.w600),
           )),
+=======
+    AppBar appBar = new AppBar(
+      elevation: 0.0,
+      backgroundColor: new Color(0xFFFFFF),
+      title: new Text(
+        hideTopMessage ? "" : _topMessage,
+        textAlign: TextAlign.center,
+        style: new TextStyle(
+          fontFamily: "RobotoCondensed",
+          fontSize: 24.0,
+          fontWeight: FontWeight.w600
+        ),
+      ),
+>>>>>>> parent of 19f805f... Data is now persistent, Grade 9 Mode works, cleaned up code
       actions: <Widget>[
         new PopupMenuButton<MenuChoices>(
             onSelected: (MenuChoices result) {
@@ -308,6 +353,7 @@ class PeriodWidget extends StatelessWidget {
     String name = _period.name;
 
     if (enableCustomPeriodNames) {
+<<<<<<< HEAD
        if (grade9Mode && _topMessage.contains("DAY 2")) {
         for (int i = 0; i < periodNames.length; i++) {
           if (_period.name.contains(periodNames[i])) {
@@ -322,10 +368,18 @@ class PeriodWidget extends StatelessWidget {
         }
       }
 
+=======
+      for (int i = 0; i < periodNames.length; i++) {
+        if (_period.name.contains(periodNames[i])) {
+          name = customPeriodNames[i]; 
+        }
+      }    
+>>>>>>> parent of 19f805f... Data is now persistent, Grade 9 Mode works, cleaned up code
     }
 
     double padding = _periods.length * paddingMultiplier;
     return new Padding(
+<<<<<<< HEAD
         padding: new EdgeInsets.only(
             top: padding, bottom: padding, left: 40.0, right: 35.0),
         child: new Row(
@@ -355,15 +409,46 @@ class PeriodWidget extends StatelessWidget {
                     textAlign: TextAlign.left),
               ),
             ]));
+=======
+      padding: new EdgeInsets.only(top: padding, bottom: padding),
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          new Text(name.toUpperCase(),
+            style: new TextStyle(
+              fontWeight: FontWeight.w600,
+              fontFamily: "RobotoCondensed",
+              fontSize: 24.0,
+              color: Colors.white
+            ),
+            textAlign: TextAlign.center
+          ),
+          new Text(
+            change24HourTo12Hour(_period.startTime) +
+              " - " +
+              change24HourTo12Hour(_period.endTime),
+            style: new TextStyle(
+              fontWeight: FontWeight.w600,
+              fontFamily: "RobotoCondensed",
+              fontSize: 24.0,
+              color: Colors.white
+            ),
+            textAlign: TextAlign.center
+          ),
+        ]
+      )
+    );
+>>>>>>> parent of 19f805f... Data is now persistent, Grade 9 Mode works, cleaned up code
   }
 }
 
 Widget getCustomPeriodsFields() {
   List<Widget> periodFields = [];
 
-  if (enableCustomPeriodNames) {
+  if (enableCustomPeriodNames && !grade9Mode) {
     for (int i = 0; i < periodNames.length; i++) {
       periodFields.add(new ListTile(
+<<<<<<< HEAD
         dense: true,
         leading: new Text(
           periodNames[i],
@@ -411,8 +496,20 @@ Widget getCustomPeriodsFields() {
             customPeriodNamesDay2[i] = input;
           },
         ),
+=======
+        title: new TextField(
+          decoration: new InputDecoration(
+            labelText: periodNames[i],
+            hintText: customPeriodNames[i] ),
+          onChanged: (String input) {
+            customPeriodNames[i] = input;
+          },
+        )
+>>>>>>> parent of 19f805f... Data is now persistent, Grade 9 Mode works, cleaned up code
       ));
     }
+  } else if (enableCustomPeriodNames && grade9Mode) {
+    
   }
 
   return new Column(children: periodFields);
