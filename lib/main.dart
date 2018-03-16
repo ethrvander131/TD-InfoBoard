@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,33 +8,21 @@ import 'package:intl/intl.dart';
 import 'Period.dart';
 import 'SettingsPage.dart';
 
+bool grade9Mode;
+bool hideTopMessage = false;
+bool enableCustomPeriodNames = false;
+
 String _topMessage = "TOP MESSAGE";
 String _bottomMessage = "BOTTOM MESSAGE";
 String _image1Url = "";
 String _image2Url = "";
 final String graphicsBaseUrl = "http://splash.tdchristian.ca/apps/infoboard/";
 
+List<String> customPeriodNames;
+List<String> customPeriodNamesDay2;
 List<Period> _periods = [];
 
 final List<String> periodNames = [
-  "PERIOD 1",
-  "PERIOD 2",
-  "PERIOD 3",
-  "PERIOD 4"
-];
-
-bool grade9Mode;
-bool hideTopMessage = false;
-bool enableCustomPeriodNames = false;
-
-List<String> customPeriodNames = [
-  "PERIOD 1",
-  "PERIOD 2",
-  "PERIOD 3",
-  "PERIOD 4"
-];
-
-List<String> customPeriodNamesDay2 = [
   "PERIOD 1",
   "PERIOD 2",
   "PERIOD 3",
@@ -53,9 +40,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: "TDChristian InfoBoard",
-      home: new InfoBoard(),
-      theme: new ThemeData(primaryColor: Colors.green));
+        title: "TDChristian InfoBoard",
+        home: new InfoBoard(),
+        theme: new ThemeData(primaryColor: Colors.green));
   }
 }
 
@@ -67,7 +54,6 @@ class InfoBoard extends StatefulWidget {
 }
 
 class _InfoBoardState extends State<InfoBoard> {
-
   @override
   void initState() {
     super.initState();
@@ -77,7 +63,7 @@ class _InfoBoardState extends State<InfoBoard> {
 
   _getInfoBoard() async {
     final String url =
-      'http://splash.tdchristian.ca/apps/if2/getScreenData.php';
+        'http://splash.tdchristian.ca/apps/if2/getScreenData.php';
     HttpClient httpClient = new HttpClient();
 
     String topMessage;
@@ -129,20 +115,11 @@ class _InfoBoardState extends State<InfoBoard> {
     grade9Mode = prefs.getBool('grade9Mode') ?? false;
     hideTopMessage = prefs.getBool('hideTopMessage') ?? false;
     enableCustomPeriodNames = prefs.getBool('enableCustomPeriodNames') ?? false;
-    customPeriodNames = prefs.getStringList('customPeriodNames') ?? [
-      "PERIOD 1",
-      "PERIOD 2",
-      "PERIOD 3",
-      "PERIOD 4"
-    ];
+    customPeriodNames = prefs.getStringList('customPeriodNames') ??
+        ["PERIOD 1", "PERIOD 2", "PERIOD 3", "PERIOD 4"];
 
-    customPeriodNamesDay2 = prefs.getStringList('customPeriodNames2') ?? [
-      "PERIOD 1",
-      "PERIOD 2",
-      "PERIOD 3",
-      "PERIOD 4"
-    ];
-
+    customPeriodNamesDay2 = prefs.getStringList('customPeriodNames2') ??
+        ["PERIOD 1", "PERIOD 2", "PERIOD 3", "PERIOD 4"];
   }
 
   _saveValues() async {
@@ -156,65 +133,53 @@ class _InfoBoardState extends State<InfoBoard> {
 
   @override
   Widget build(BuildContext context) {
-    // _getInfoBoard();
-
     _topMessage = _topMessage == "" ? "NO SCHOOL TODAY" : _topMessage;
-    _bottomMessage = _bottomMessage == "" ? "NO MESSAGE": _bottomMessage;
+    _bottomMessage = _bottomMessage == "" ? "NO MESSAGE" : _bottomMessage;
 
-    
     _saveValues();
-    _getUserData();
 
     AppBar appBar = new AppBar(
       elevation: 0.0,
       backgroundColor: new Color(0xFFFFFF),
       title: new Padding(
-        padding: new EdgeInsets.only(left: 24.0),
-        child: new Text(
-        
-        hideTopMessage ? "" : _topMessage,
-        textAlign: TextAlign.center,
-        style: new TextStyle(
-          fontFamily: "RobotoCondensed",
-          fontSize: 24.0,
-          fontWeight: FontWeight.w600
-        ),
-      )
-      ),
+          padding: new EdgeInsets.only(left: 24.0),
+          child: new Text(
+            hideTopMessage ? "" : _topMessage,
+            textAlign: TextAlign.center,
+            style: new TextStyle(
+                fontFamily: "RobotoCondensed",
+                fontSize: 24.0,
+                fontWeight: FontWeight.w600),
+          )),
       actions: <Widget>[
         new PopupMenuButton<MenuChoices>(
-          onSelected: (MenuChoices result) {
-            setState(() {
-              if (result == MenuChoices.refresh) {
-                _getInfoBoard();
-              } else if (result == MenuChoices.settings) {
-                Navigator.push(
-                  context,
-                  new MaterialPageRoute(
-                    builder: (context) => new SettingsPage()
-                  )
-                );
-              }
-            });
-          },
-          itemBuilder: (BuildContext context) =>
-            <PopupMenuEntry<MenuChoices>>[
-              new PopupMenuItem<MenuChoices>(
-                value: MenuChoices.refresh,
-                child: new ListTile(
-                  leading: new Icon(Icons.refresh),
-                  title: new Text('REFRESH'),
-                ),
-              ),
-              new PopupMenuItem<MenuChoices>(
-                value: MenuChoices.settings,
-                child: new ListTile(
-                  leading: new Icon(Icons.settings),
-                  title: new Text("SETTINGS")
-                )
-              )
-            ]
-        ),
+            onSelected: (MenuChoices result) {
+              setState(() {
+                if (result == MenuChoices.refresh) {
+                  _getInfoBoard();
+                } else if (result == MenuChoices.settings) {
+                  Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (context) => new SettingsPage()));
+                }
+              });
+            },
+            itemBuilder: (BuildContext context) =>
+                <PopupMenuEntry<MenuChoices>>[
+                  new PopupMenuItem<MenuChoices>(
+                    value: MenuChoices.refresh,
+                    child: new ListTile(
+                      leading: new Icon(Icons.refresh),
+                      title: new Text('REFRESH'),
+                    ),
+                  ),
+                  new PopupMenuItem<MenuChoices>(
+                      value: MenuChoices.settings,
+                      child: new ListTile(
+                          leading: new Icon(Icons.settings),
+                          title: new Text("SETTINGS")))
+                ]),
       ],
     );
 
@@ -229,104 +194,88 @@ class _InfoBoardState extends State<InfoBoard> {
         height: 100.0,
       );
       image2 = new Image.network(
-        _image2Url != ""
-            ? graphicsBaseUrl + _image2Url
-            : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
-        height: 100.0);
+          _image2Url != ""
+              ? graphicsBaseUrl + _image2Url
+              : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
+          height: 100.0);
     } catch (exception) {
       print(exception);
     }
-    
-    
-    return new Stack(
-      children: <Widget>[
-        new Scaffold(
-          appBar: hideTopMessage ? null : appBar,
-          backgroundColor: Colors.green,
-          body: new Column(
-            children: [
-              hideTopMessage ? new SizedBox(
-                height: 30.0
-              ) : new Container(),
-              new Column(
-                children: _periods.map((period) => new PeriodWidget(period)).toList(),
-              ),
-              new Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  image1,
-                  image2
-                ],
-              ),
-              new Expanded(
-                child: new Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: new Container(
-                    decoration: new BoxDecoration(
-                      color: Colors.green[700],
-                      borderRadius: new BorderRadius.all(new Radius.circular(12.0))
-                    ),
-                    child: new Center(
-                      heightFactor: 5.0,
-                      child: new Text(_bottomMessage,
-                        textAlign: TextAlign.center,
-                        style: new TextStyle(
+
+    return new Stack(children: <Widget>[
+      new Scaffold(
+        appBar: hideTopMessage ? null : appBar,
+        backgroundColor: Colors.green,
+        body: new Column(children: [
+          hideTopMessage ? new SizedBox(height: 30.0) : new Container(),
+          new Column(
+            children:
+                _periods.map((period) => new PeriodWidget(period)).toList(),
+          ),
+          new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [image1, image2],
+          ),
+          new Expanded(
+              child: new Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: new Container(
+              decoration: new BoxDecoration(
+                  color: Colors.green[700],
+                  borderRadius:
+                      new BorderRadius.all(new Radius.circular(12.0))),
+              child: new Center(
+                  heightFactor: 5.0,
+                  child: new Text(_bottomMessage,
+                      textAlign: TextAlign.center,
+                      style: new TextStyle(
                           fontFamily: "RobotoCondensed",
                           fontSize: 22.0,
-                          color: Colors.white
-                        )
-                      )
-                    ),
-                  ),
-                )
-              )
-            ]
-          ),
-        ),
-        hideTopMessage ? new Scaffold(
-          backgroundColor: new Color(0xFFFFFF),
-          appBar: new AppBar(
-            backgroundColor: new Color(0xFFFFFF),
-            elevation: 0.0,
-            actions: <Widget>[
-              new PopupMenuButton<MenuChoices>(
-                onSelected: (MenuChoices result) {
-                  setState(() {
-                    if (result == MenuChoices.refresh) {
-                      _getInfoBoard();
-                    } else if (result == MenuChoices.settings) {
-                      Navigator.push(
-                        context,
-                        new MaterialPageRoute(
-                          builder: (context) => new SettingsPage()
-                        )
-                      );
-                    }
-                  });
-                },
-                itemBuilder: (BuildContext context) =>
-                  <PopupMenuEntry<MenuChoices>>[
-                    new PopupMenuItem<MenuChoices>(
-                      value: MenuChoices.refresh,
-                      child: new ListTile(
-                        leading: new Icon(Icons.refresh),
-                        title: new Text('REFRESH'),
-                      ),
-                    ),
-                    new PopupMenuItem<MenuChoices>(
-                      value: MenuChoices.settings,
-                      child: new ListTile(
-                        leading: new Icon(Icons.settings),
-                        title: new Text("SETTINGS")
-                      )
-                    )
-                  ]
+                          color: Colors.white))),
+            ),
+          ))
+        ]),
+      ),
+      hideTopMessage
+          ? new Scaffold(
+              backgroundColor: new Color(0xFFFFFF),
+              appBar: new AppBar(
+                backgroundColor: new Color(0xFFFFFF),
+                elevation: 0.0,
+                actions: <Widget>[
+                  new PopupMenuButton<MenuChoices>(
+                      onSelected: (MenuChoices result) {
+                        setState(() {
+                          if (result == MenuChoices.refresh) {
+                            _getInfoBoard();
+                          } else if (result == MenuChoices.settings) {
+                            Navigator.push(
+                                context,
+                                new MaterialPageRoute(
+                                    builder: (context) => new SettingsPage()));
+                          }
+                        });
+                      },
+                      itemBuilder: (BuildContext context) =>
+                          <PopupMenuEntry<MenuChoices>>[
+                            new PopupMenuItem<MenuChoices>(
+                              value: MenuChoices.refresh,
+                              child: new ListTile(
+                                leading: new Icon(Icons.refresh),
+                                title: new Text('REFRESH'),
+                              ),
+                            ),
+                            new PopupMenuItem<MenuChoices>(
+                                value: MenuChoices.settings,
+                                child: new ListTile(
+                                    leading: new Icon(Icons.settings),
+                                    title: new Text("SETTINGS")))
+                          ]),
+                ],
               ),
-            ],
-          ),
-        ) : new Container()
-      ]
-    );
+            )
+          : new Container()
+    ]);
   }
 }
 
@@ -359,85 +308,71 @@ class PeriodWidget extends StatelessWidget {
     String name = _period.name;
 
     if (enableCustomPeriodNames) {
-      if (!grade9Mode || _topMessage.contains("DAY 1")) {
+       if (grade9Mode && _topMessage.contains("DAY 2")) {
         for (int i = 0; i < periodNames.length; i++) {
           if (_period.name.contains(periodNames[i])) {
-            name = customPeriodNames[i]; 
+            name = customPeriodNamesDay2[i];
           }
-        }  
+        }
       } else {
-        if (grade9Mode && _topMessage.contains("DAY 2")) {
-          for (int i = 0; i < periodNames.length; i++) {
-            if (_period.name.contains(periodNames[i])) {
-              name = customPeriodNamesDay2[i]; 
-            }
-          }  
+        for (int i = 0; i < periodNames.length; i++) {
+          if (_period.name.contains(periodNames[i])) {
+            name = customPeriodNames[i];
+          }
         }
       }
-        
+
     }
 
-    
     double padding = _periods.length * paddingMultiplier;
     return new Padding(
-      padding: new EdgeInsets.only(top: padding, bottom: padding, left: 40.0, right: 35.0),
-      child: new Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-            new Text(name.toUpperCase(),
-            style: new TextStyle(
-              fontWeight: FontWeight.w600,
-              fontFamily: "RobotoCondensed",
-              fontSize: 24.0,
-              color: Colors.white
-            ),
-            textAlign: TextAlign.left
-          ),
-          new Expanded(
-            child: new Container(),
-          ),
-          new Container(
-            width: 120.0,
-            child: new Text(
-              change24HourTo12Hour(_period.startTime) +
-                " - " +
-                change24HourTo12Hour(_period.endTime),
-              style: new TextStyle(
-                fontWeight: FontWeight.w600,
-                fontFamily: "RobotoCondensed",
-                fontSize: 24.0,
-                color: Colors.white
+        padding: new EdgeInsets.only(
+            top: padding, bottom: padding, left: 40.0, right: 35.0),
+        child: new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              new Text(name.toUpperCase(),
+                  style: new TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontFamily: "RobotoCondensed",
+                      fontSize: 24.0,
+                      color: Colors.white),
+                  textAlign: TextAlign.left),
+              new Expanded(
+                child: new Container(),
               ),
-              textAlign: TextAlign.left
-            ),
-          )
-          ,
-        ]
-      )
-    );
+              new Container(
+                width: 120.0,
+                child: new Text(
+                    change24HourTo12Hour(_period.startTime) +
+                        " - " +
+                        change24HourTo12Hour(_period.endTime),
+                    style: new TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "RobotoCondensed",
+                        fontSize: 24.0,
+                        color: Colors.white),
+                    textAlign: TextAlign.left),
+              ),
+            ]));
   }
 }
-Widget getCustomPeriodsFields() {
 
+Widget getCustomPeriodsFields() {
   List<Widget> periodFields = [];
 
   if (enableCustomPeriodNames) {
     for (int i = 0; i < periodNames.length; i++) {
-
       periodFields.add(new ListTile(
         dense: true,
         leading: new Text(
           periodNames[i],
-          style: new TextStyle(
-            fontSize: 12.0
-          ),),
+          style: new TextStyle(fontSize: 12.0),
+        ),
         title: new TextField(
           decoration: new InputDecoration(
-            labelText: customPeriodNames[i],
-            labelStyle: new TextStyle(
-              color: Colors.black
-            )
-          ),
+              labelText: customPeriodNames[i],
+              labelStyle: new TextStyle(color: Colors.black87)),
           onChanged: (String input) {
             customPeriodNames[i] = input;
           },
@@ -446,43 +381,32 @@ Widget getCustomPeriodsFields() {
     }
   }
   if (grade9Mode) {
-
-    periodFields.insert(0, new Padding(
-      padding: new EdgeInsets.only(top: 8.0),
-      child: new Text("DAY 1",
-      style: new TextStyle(
-        fontSize: 20.0,
-        color: Colors.black87
-      )
-    )));
-    periodFields.add( new SizedBox(
+    periodFields.insert(
+        0,
+        new Padding(
+            padding: new EdgeInsets.only(top: 8.0),
+            child: new Text("DAY 1",
+                style: new TextStyle(fontSize: 16.0, color: Colors.black54))));
+    periodFields.add(new SizedBox(
       height: 16.0,
     ));
-    periodFields.add( new Divider());
+    periodFields.add(new Divider());
     periodFields.add(new Padding(
-      padding: new EdgeInsets.only(top: 8.0),
-      child: new Text("DAY 2",
-      style: new TextStyle(
-        fontSize: 20.0,
-        color: Colors.black87
-      )
-    )));
+        padding: new EdgeInsets.only(top: 8.0),
+        child: new Text("DAY 2",
+            style: new TextStyle(fontSize: 16.0, color: Colors.black54))));
 
     for (int i = 0; i < periodNames.length; i++) {
-
       periodFields.add(new ListTile(
         dense: true,
         leading: new Text(
           periodNames[i],
-          style: new TextStyle(
-            fontSize: 12.0
-          ),),
+          style: new TextStyle(fontSize: 12.0),
+        ),
         title: new TextField(
           decoration: new InputDecoration(
-            labelText: customPeriodNamesDay2[i],
-            labelStyle: new TextStyle(
-              color: Colors.black
-            )),
+              labelText: customPeriodNamesDay2[i],
+              labelStyle: new TextStyle(color: Colors.black87)),
           onChanged: (String input) {
             customPeriodNamesDay2[i] = input;
           },
@@ -491,8 +415,5 @@ Widget getCustomPeriodsFields() {
     }
   }
 
-  return new Column(
-    children: periodFields
-  );
+  return new Column(children: periodFields);
 }
-

@@ -1,7 +1,3 @@
-
-import 'package:flutter/material.dart';
-import 'main.dart';
-
 class Period {
   String name;
   String startTime;
@@ -39,4 +35,3 @@ List<Period> getPeriods(List<List<String>> periodsList) {
 
   return periods;
 }
-
