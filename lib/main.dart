@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-import 'period.dart';
+import 'Period.dart';
 import 'SettingsPage.dart';
 
 bool grade9Mode;
@@ -141,16 +141,13 @@ class _InfoBoardState extends State<InfoBoard> {
     AppBar appBar = new AppBar(
       elevation: 0.0,
       backgroundColor: new Color(0xFFFFFF),
-      title: new Padding(
-          padding: new EdgeInsets.only(left: 24.0),
-          child: new Text(
+      title: new Text(
             hideTopMessage ? "" : _topMessage,
-            textAlign: TextAlign.center,
             style: new TextStyle(
                 fontFamily: "RobotoCondensed",
                 fontSize: 24.0,
                 fontWeight: FontWeight.w600),
-          )),
+          ),
       actions: <Widget>[
         new PopupMenuButton<MenuChoices>(
             onSelected: (MenuChoices result) {
@@ -207,7 +204,7 @@ class _InfoBoardState extends State<InfoBoard> {
         appBar: hideTopMessage ? null : appBar,
         backgroundColor: Colors.green,
         body: new Column(children: [
-          hideTopMessage ? new SizedBox(height: 30.0) : new Container(),
+          hideTopMessage ? new SizedBox(height: 45.0) : new Container(),
           new Column(
             children:
                 _periods.map((period) => new PeriodWidget(period)).toList(),
@@ -223,7 +220,7 @@ class _InfoBoardState extends State<InfoBoard> {
               decoration: new BoxDecoration(
                   color: Colors.green[700],
                   borderRadius:
-                      new BorderRadius.all(new Radius.circular(12.0))),
+                      new BorderRadius.all(new Radius.circular(30.0))),
               child: new Center(
                   heightFactor: 5.0,
                   child: new Text(_bottomMessage,
@@ -303,7 +300,7 @@ class PeriodWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var paddingMultiplier = hideTopMessage ? 2.5 : 2.0;
+    var paddingMultiplier = hideTopMessage ? 2.0 : 1.5;
 
     String name = _period.name;
 
@@ -327,19 +324,20 @@ class PeriodWidget extends StatelessWidget {
     double padding = _periods.length * paddingMultiplier;
     return new Padding(
         padding: new EdgeInsets.only(
-            top: padding, bottom: padding, left: 40.0, right: 35.0),
+            top: padding, bottom: padding, left: 25.0, right: 25.0),
         child: new Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              new Text(name.toUpperCase(),
+              new Expanded(
+                child: new Text(name.toUpperCase(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                   style: new TextStyle(
                       fontWeight: FontWeight.w600,
                       fontFamily: "RobotoCondensed",
-                      fontSize: 24.0,
+                      fontSize: 22.0,
                       color: Colors.white),
-                  textAlign: TextAlign.left),
-              new Expanded(
-                child: new Container(),
+                  textAlign: TextAlign.left)
               ),
               new Container(
                 width: 120.0,
@@ -350,7 +348,7 @@ class PeriodWidget extends StatelessWidget {
                     style: new TextStyle(
                         fontWeight: FontWeight.w600,
                         fontFamily: "RobotoCondensed",
-                        fontSize: 24.0,
+                        fontSize: 22.0,
                         color: Colors.white),
                     textAlign: TextAlign.left),
               ),
@@ -363,13 +361,19 @@ Widget getCustomPeriodsFields() {
 
   if (enableCustomPeriodNames) {
     for (int i = 0; i < periodNames.length; i++) {
-      periodFields.add(new ListTile(
-        dense: true,
-        leading: new Text(
-          periodNames[i],
-          style: new TextStyle(fontSize: 12.0),
-        ),
-        title: new TextField(
+      periodFields.add(new Row(
+        children: [
+          new Padding(
+            padding: new EdgeInsets.only(left: 16.0, right: 16.0),
+            child: new Text(
+              periodNames[i],
+              style: new TextStyle(fontSize: 12.0),
+              maxLines: 1,
+            ),
+          ),
+          
+        new Expanded(
+          child: new TextField(
           decoration: new InputDecoration(
               labelText: customPeriodNames[i],
               labelStyle: new TextStyle(color: Colors.black87)),
@@ -377,7 +381,11 @@ Widget getCustomPeriodsFields() {
             customPeriodNames[i] = input;
           },
         ),
-      ));
+        )
+        
+        ],
+      )
+      );
     }
   }
   if (grade9Mode) {
@@ -397,13 +405,19 @@ Widget getCustomPeriodsFields() {
             style: new TextStyle(fontSize: 16.0, color: Colors.black54))));
 
     for (int i = 0; i < periodNames.length; i++) {
-      periodFields.add(new ListTile(
-        dense: true,
-        leading: new Text(
-          periodNames[i],
-          style: new TextStyle(fontSize: 12.0),
-        ),
-        title: new TextField(
+      periodFields.add(new Row(
+        children: [
+          new Padding(
+            padding: new EdgeInsets.only(left: 16.0, right: 16.0),
+            child: new Text(
+              periodNames[i],
+              style: new TextStyle(fontSize: 12.0),
+              maxLines: 1,
+            ),
+          ),
+          
+        new Expanded(
+          child: new TextField(
           decoration: new InputDecoration(
               labelText: customPeriodNamesDay2[i],
               labelStyle: new TextStyle(color: Colors.black87)),
@@ -411,7 +425,11 @@ Widget getCustomPeriodsFields() {
             customPeriodNamesDay2[i] = input;
           },
         ),
-      ));
+        )
+        
+        ],
+      )
+      );
     }
   }
 
