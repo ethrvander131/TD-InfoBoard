@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-import 'Period.dart';
+import 'period.dart';
 import 'SettingsPage.dart';
 
 bool grade9Mode;
