@@ -8,9 +8,11 @@ import 'package:intl/intl.dart';
 import 'Period.dart';
 import 'SettingsPage.dart';
 
-bool grade9Mode;
+bool grade9Mode = false;
 bool hideTopMessage = false;
-bool enableCustomPeriodNames = false;
+bool enableCustomPeriodNames = true;
+bool isSchoolToday = false;
+bool failedToGetInfoBoard = true;
 
 String _topMessage = "TOP MESSAGE";
 String _bottomMessage = "BOTTOM MESSAGE";
@@ -76,6 +78,7 @@ class _InfoBoardState extends State<InfoBoard> {
       var request = await httpClient.getUrl(Uri.parse(url));
       var response = await request.close();
       if (response.statusCode == HttpStatus.OK) {
+        failedToGetInfoBoard = false;
         var json = await response.transform(UTF8.decoder).join();
         var data = JSON.decode(json);
         topMessage = data['5'][1];
@@ -83,8 +86,9 @@ class _InfoBoardState extends State<InfoBoard> {
         image1Url = data['7'];
         image2Url = data['8'];
         periods = getPeriods(data['4']);
-      }
+      } else {  }
     } catch (exception) {
+      failedToGetInfoBoard = true;
       print(exception);
     }
 
@@ -133,11 +137,10 @@ class _InfoBoardState extends State<InfoBoard> {
 
   @override
   Widget build(BuildContext context) {
-    _topMessage = _topMessage == "" ? "NO SCHOOL TODAY" : _topMessage;
+
     _bottomMessage = _bottomMessage == "" ? "NO MESSAGE" : _bottomMessage;
 
     _saveValues();
-
     AppBar appBar = new AppBar(
       elevation: 0.0,
       backgroundColor: new Color(0xFFFFFF),
@@ -180,26 +183,29 @@ class _InfoBoardState extends State<InfoBoard> {
       ],
     );
 
-    Image image1;
-    Image image2;
+    
+    if (isSchoolToday) {
 
-    try {
-      image1 = new Image.network(
-        _image1Url != ""
-            ? graphicsBaseUrl + _image1Url
-            : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
-        height: 100.0,
-      );
-      image2 = new Image.network(
-          _image2Url != ""
-              ? graphicsBaseUrl + _image2Url
+      Image image1;
+      Image image2;
+
+      try {
+        image1 = new Image.network(
+          _image1Url != ""
+              ? graphicsBaseUrl + _image1Url
               : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
-          height: 100.0);
-    } catch (exception) {
-      print(exception);
-    }
-
-    return new Stack(children: [
+          height: 100.0,
+        );
+        image2 = new Image.network(
+            _image2Url != ""
+                ? graphicsBaseUrl + _image2Url
+                : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
+            height: 100.0);
+      } catch (exception) {
+        print(exception);
+      }
+      
+      return new Stack(children: [
       new Scaffold(
         appBar: hideTopMessage ? null : appBar,
         backgroundColor: Colors.green,
@@ -207,7 +213,7 @@ class _InfoBoardState extends State<InfoBoard> {
           padding: new EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
             child: new Column(
               children: [
-                hideTopMessage ? new SizedBox(height: 36.0) : new Container(),
+                hideTopMessage ? new SizedBox(height: 40.0) : new Container(),
                 new Expanded(
                   child: new Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -281,6 +287,103 @@ class _InfoBoardState extends State<InfoBoard> {
             )
           : new Container()
     ]);
+    } else if (failedToGetInfoBoard) {
+      return new Scaffold(
+      appBar: new AppBar(
+        elevation: 0.0,
+        backgroundColor: Colors.green,
+        actions: [new PopupMenuButton<MenuChoices>(
+                      onSelected: (MenuChoices result) {
+                        setState(() {
+                          if (result == MenuChoices.refresh) {
+                            _getInfoBoard();
+                          } else if (result == MenuChoices.settings) {
+                            Navigator.push(
+                                context,
+                                new MaterialPageRoute(
+                                    builder: (context) => new SettingsPage()));
+                          }
+                        });
+                      },
+                      itemBuilder: (BuildContext context) =>
+                          <PopupMenuEntry<MenuChoices>>[
+                            new PopupMenuItem<MenuChoices>(
+                              value: MenuChoices.refresh,
+                              child: new ListTile(
+                                leading: new Icon(Icons.refresh),
+                                title: new Text('REFRESH'),
+                              ),
+                            ),
+                            new PopupMenuItem<MenuChoices>(
+                                value: MenuChoices.settings,
+                                child: new ListTile(
+                                    leading: new Icon(Icons.settings),
+                                    title: new Text("SETTINGS")))
+                          ])],
+      ),
+      backgroundColor: Colors.green,
+      body: new Center(
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            new Text(
+              '!',
+              style: new TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "RobotoCondensed",
+                fontSize: 250.0,
+                color: Colors.white
+              )
+            ),
+            new Text(
+              'FAILED TO LOAD INFOBOARD',
+              style: new TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "RobotoCondensed",
+                fontSize: 24.0,
+                color: Colors.white
+              )
+            ),
+            new Text(
+              'PLEASE CHECK YOUR INTERNET CONNECTION',
+              style: new TextStyle(
+                fontWeight: FontWeight.w400,
+                fontFamily: "RobotoCondensed",
+                fontSize: 18.0,
+                color: Colors.white
+              )
+            )
+          ],
+        )
+      )
+    );
+    
+    } else {
+      return new Scaffold(
+      appBar: appBar,
+      backgroundColor: Colors.green,
+      body: new Center(
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            new Image(
+              image: new AssetImage('assets/happyface.png'),
+              height: 200.0,
+            ),
+            new Text(
+              'NO SCHOOL TODAY',
+              style: new TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "RobotoCondensed",
+                fontSize: 36.0,
+                color: Colors.white
+              )
+            )
+          ],
+        )
+      )
+    );
+    }
   }
 }
 
@@ -330,7 +433,7 @@ class PeriodWidget extends StatelessWidget {
 
     return new Padding(
         padding: new EdgeInsets.only(
-            left: 8.0, right: 8.0),
+            left: 12.0, right: 12.0),
         child: new Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -341,21 +444,22 @@ class PeriodWidget extends StatelessWidget {
                   style: new TextStyle(
                       fontWeight: FontWeight.w600,
                       fontFamily: "RobotoCondensed",
-                      fontSize: 22.0,
+                      fontSize: 27.0,
                       color: Colors.white),
                   textAlign: TextAlign.left)
               ),
               new Container(
                 child: new Text(
-                    change24HourTo12Hour(_period.startTime) +
-                        " - " +
-                        change24HourTo12Hour(_period.endTime),
-                    style: new TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontFamily: "RobotoCondensed",
-                        fontSize: 22.0,
-                        color: Colors.white),
-                    textAlign: TextAlign.left),
+                  change24HourTo12Hour(_period.startTime) +
+                    " - " +
+                    change24HourTo12Hour(_period.endTime),
+                  style: new TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontFamily: "RobotoCondensed",
+                    fontSize: 27.0,
+                    color: Colors.white),
+                  textAlign: TextAlign.left
+                ),
               ),
             ]));
   }
