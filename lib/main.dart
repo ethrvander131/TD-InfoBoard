@@ -42,9 +42,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-        title: "TDChristian InfoBoard",
-        home: new InfoBoard(),
-        theme: new ThemeData(primaryColor: Colors.green));
+      title: "TDChristian InfoBoard",
+      home: new InfoBoard(),
+      theme: new ThemeData(primaryColor: Colors.green)
+    );
   }
 }
 
@@ -65,7 +66,7 @@ class _InfoBoardState extends State<InfoBoard> {
 
   _getInfoBoard() async {
     final String url =
-        'http://splash.tdchristian.ca/apps/if2/getScreenData.php';
+      'http://splash.tdchristian.ca/apps/if2/getScreenData.php';
     HttpClient httpClient = new HttpClient();
 
     String topMessage;
@@ -86,7 +87,7 @@ class _InfoBoardState extends State<InfoBoard> {
         image1Url = data['7'];
         image2Url = data['8'];
         periods = getPeriods(data['4']);
-      } else {  }
+      } else { failedToGetInfoBoard = true; }
     } catch (exception) {
       failedToGetInfoBoard = true;
       print(exception);
@@ -120,10 +121,10 @@ class _InfoBoardState extends State<InfoBoard> {
     hideTopMessage = prefs.getBool('hideTopMessage') ?? false;
     enableCustomPeriodNames = prefs.getBool('enableCustomPeriodNames') ?? false;
     customPeriodNames = prefs.getStringList('customPeriodNames') ??
-        ["PERIOD 1", "PERIOD 2", "PERIOD 3", "PERIOD 4"];
+      ["PERIOD 1", "PERIOD 2", "PERIOD 3", "PERIOD 4"];
 
     customPeriodNamesDay2 = prefs.getStringList('customPeriodNames2') ??
-        ["PERIOD 1", "PERIOD 2", "PERIOD 3", "PERIOD 4"];
+      ["PERIOD 1", "PERIOD 2", "PERIOD 3", "PERIOD 4"];
   }
 
   _saveValues() async {
@@ -141,49 +142,65 @@ class _InfoBoardState extends State<InfoBoard> {
     _bottomMessage = _bottomMessage == "" ? "NO MESSAGE" : _bottomMessage;
 
     _saveValues();
+    
+    if (_topMessage.contains("TODAY")) {
+      isSchoolToday = true;
+    }
+
+    List<Widget> menuChoices = [
+      new PopupMenuButton<MenuChoices>(
+        onSelected: (MenuChoices result) {
+          setState(() {
+            if (result == MenuChoices.refresh) {
+              _getInfoBoard();
+            } else if (result == MenuChoices.settings) {
+              Navigator.push(
+                context,
+                new MaterialPageRoute(
+                  builder: (context) => new SettingsPage()
+                )
+              );
+            }
+            }
+          );
+        },
+        itemBuilder: (BuildContext context) =>
+          <PopupMenuEntry<MenuChoices>>[
+            new PopupMenuItem<MenuChoices>(
+              value: MenuChoices.refresh,
+              child: new ListTile(
+                leading: new Icon(Icons.refresh),
+                title: new Text('REFRESH'),
+              ),
+            ),
+            new PopupMenuItem<MenuChoices>(
+              value: MenuChoices.settings,
+              child: new ListTile(
+                leading: new Icon(Icons.settings),
+                title: new Text("SETTINGS")
+              )
+            )
+          ]
+      )
+    ];
+
     AppBar appBar = new AppBar(
       elevation: 0.0,
       backgroundColor: new Color(0xFFFFFF),
-      title: new Text(
-            hideTopMessage ? "" : _topMessage,
-            style: new TextStyle(
-                fontFamily: "RobotoCondensed",
-                fontSize: 24.0,
-                fontWeight: FontWeight.w600),
+      title: new Padding(
+        padding: new EdgeInsets.only(left: 12.0),
+        child: new Text(
+          hideTopMessage ? "" : _topMessage,
+          style: new TextStyle(
+            fontFamily: "RobotoCondensed",
+            fontSize: 24.0,
+            fontWeight: FontWeight.w600
           ),
-      actions: <Widget>[
-        new PopupMenuButton<MenuChoices>(
-            onSelected: (MenuChoices result) {
-              setState(() {
-                if (result == MenuChoices.refresh) {
-                  _getInfoBoard();
-                } else if (result == MenuChoices.settings) {
-                  Navigator.push(
-                      context,
-                      new MaterialPageRoute(
-                          builder: (context) => new SettingsPage()));
-                }
-              });
-            },
-            itemBuilder: (BuildContext context) =>
-                <PopupMenuEntry<MenuChoices>>[
-                  new PopupMenuItem<MenuChoices>(
-                    value: MenuChoices.refresh,
-                    child: new ListTile(
-                      leading: new Icon(Icons.refresh),
-                      title: new Text('REFRESH'),
-                    ),
-                  ),
-                  new PopupMenuItem<MenuChoices>(
-                      value: MenuChoices.settings,
-                      child: new ListTile(
-                          leading: new Icon(Icons.settings),
-                          title: new Text("SETTINGS")))
-                ]),
-      ],
+        ),
+      ),
+      actions: menuChoices
     );
 
-    
     if (isSchoolToday) {
 
       Image image1;
@@ -192,15 +209,15 @@ class _InfoBoardState extends State<InfoBoard> {
       try {
         image1 = new Image.network(
           _image1Url != ""
-              ? graphicsBaseUrl + _image1Url
-              : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
+            ? graphicsBaseUrl + _image1Url
+            : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
           height: 100.0,
         );
         image2 = new Image.network(
-            _image2Url != ""
-                ? graphicsBaseUrl + _image2Url
-                : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
-            height: 100.0);
+          _image2Url != ""
+            ? graphicsBaseUrl + _image2Url
+            : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
+          height: 100.0);
       } catch (exception) {
         print(exception);
       }
@@ -213,7 +230,7 @@ class _InfoBoardState extends State<InfoBoard> {
           padding: new EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
             child: new Column(
               children: [
-                hideTopMessage ? new SizedBox(height: 40.0) : new Container(),
+                hideTopMessage ? new SizedBox(height: 56.0) : new Container(),
                 new Expanded(
                   child: new Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -233,7 +250,7 @@ class _InfoBoardState extends State<InfoBoard> {
                         borderRadius:
                           new BorderRadius.all(new Radius.circular(30.0))),
                       child: new Center(
-                        heightFactor: 4.0,
+                        heightFactor: 3.0,
                         child: new Text(_bottomMessage,
                           textAlign: TextAlign.center,
                           style: new TextStyle(
@@ -250,77 +267,20 @@ class _InfoBoardState extends State<InfoBoard> {
       ),
       hideTopMessage ? new Scaffold(
         backgroundColor: new Color(0xFFFFFF),
-              appBar: new AppBar(
-                backgroundColor: new Color(0xFFFFFF),
-                elevation: 0.0,
-                actions: <Widget>[
-                  new PopupMenuButton<MenuChoices>(
-                      onSelected: (MenuChoices result) {
-                        setState(() {
-                          if (result == MenuChoices.refresh) {
-                            _getInfoBoard();
-                          } else if (result == MenuChoices.settings) {
-                            Navigator.push(
-                                context,
-                                new MaterialPageRoute(
-                                    builder: (context) => new SettingsPage()));
-                          }
-                        });
-                      },
-                      itemBuilder: (BuildContext context) =>
-                          <PopupMenuEntry<MenuChoices>>[
-                            new PopupMenuItem<MenuChoices>(
-                              value: MenuChoices.refresh,
-                              child: new ListTile(
-                                leading: new Icon(Icons.refresh),
-                                title: new Text('REFRESH'),
-                              ),
-                            ),
-                            new PopupMenuItem<MenuChoices>(
-                                value: MenuChoices.settings,
-                                child: new ListTile(
-                                    leading: new Icon(Icons.settings),
-                                    title: new Text("SETTINGS")))
-                          ]),
-                ],
-              ),
-            )
-          : new Container()
+        appBar: new AppBar(
+          backgroundColor: new Color(0xFFFFFF),
+          elevation: 0.0,
+          actions: menuChoices
+        ),
+      ) : new Container()
     ]);
     } else if (failedToGetInfoBoard) {
       return new Scaffold(
-      appBar: new AppBar(
-        elevation: 0.0,
-        backgroundColor: Colors.green,
-        actions: [new PopupMenuButton<MenuChoices>(
-                      onSelected: (MenuChoices result) {
-                        setState(() {
-                          if (result == MenuChoices.refresh) {
-                            _getInfoBoard();
-                          } else if (result == MenuChoices.settings) {
-                            Navigator.push(
-                                context,
-                                new MaterialPageRoute(
-                                    builder: (context) => new SettingsPage()));
-                          }
-                        });
-                      },
-                      itemBuilder: (BuildContext context) =>
-                          <PopupMenuEntry<MenuChoices>>[
-                            new PopupMenuItem<MenuChoices>(
-                              value: MenuChoices.refresh,
-                              child: new ListTile(
-                                leading: new Icon(Icons.refresh),
-                                title: new Text('REFRESH'),
-                              ),
-                            ),
-                            new PopupMenuItem<MenuChoices>(
-                                value: MenuChoices.settings,
-                                child: new ListTile(
-                                    leading: new Icon(Icons.settings),
-                                    title: new Text("SETTINGS")))
-                          ])],
-      ),
+        appBar: new AppBar(
+          elevation: 0.0,
+          backgroundColor: Colors.green,
+          actions: menuChoices
+        ),
       backgroundColor: Colors.green,
       body: new Center(
         child: new Column(
@@ -360,29 +320,29 @@ class _InfoBoardState extends State<InfoBoard> {
     
     } else {
       return new Scaffold(
-      appBar: appBar,
-      backgroundColor: Colors.green,
-      body: new Center(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            new Image(
-              image: new AssetImage('assets/happyface.png'),
-              height: 200.0,
-            ),
-            new Text(
-              'NO SCHOOL TODAY',
-              style: new TextStyle(
-                fontWeight: FontWeight.w600,
-                fontFamily: "RobotoCondensed",
-                fontSize: 36.0,
-                color: Colors.white
+        appBar: appBar,
+        backgroundColor: Colors.green,
+        body: new Center(
+          child: new Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              new Image(
+                image: new AssetImage('assets/happyface.png'),
+                height: 200.0,
+              ),
+              new Text(
+                'NO SCHOOL TODAY',
+                style: new TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontFamily: "RobotoCondensed",
+                  fontSize: 36.0,
+                  color: Colors.white
+                )
               )
-            )
-          ],
+            ],
+          )
         )
-      )
-    );
+      );
     }
   }
 }
@@ -432,36 +392,41 @@ class PeriodWidget extends StatelessWidget {
     }
 
     return new Padding(
-        padding: new EdgeInsets.only(
-            left: 12.0, right: 12.0),
-        child: new Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              new Expanded(
-                child: new Text(name.toUpperCase(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                  style: new TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontFamily: "RobotoCondensed",
-                      fontSize: 27.0,
-                      color: Colors.white),
-                  textAlign: TextAlign.left)
+      padding: new EdgeInsets.only(left: 12.0, right: 12.0),
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          new Expanded(
+            child: new Text(
+              name.toUpperCase(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: new TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "RobotoCondensed",
+                fontSize: 27.0,
+                color: Colors.white
               ),
-              new Container(
-                child: new Text(
-                  change24HourTo12Hour(_period.startTime) +
-                    " - " +
-                    change24HourTo12Hour(_period.endTime),
-                  style: new TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontFamily: "RobotoCondensed",
-                    fontSize: 27.0,
-                    color: Colors.white),
-                  textAlign: TextAlign.left
-                ),
+              textAlign: TextAlign.left
+            )
+          ),
+          new Container(
+            child: new Text(
+              change24HourTo12Hour(_period.startTime) +
+                " - " +
+                change24HourTo12Hour(_period.endTime),
+              style: new TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "RobotoCondensed",
+                fontSize: 27.0,
+                color: Colors.white
               ),
-            ]));
+              textAlign: TextAlign.left
+            ),
+          ),
+        ]
+      )
+    );
   }
 }
 
