@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-import 'Period.dart';
+import 'period.dart';
 import 'SettingsPage.dart';
 
 bool grade9Mode = false;
@@ -30,6 +30,13 @@ final List<String> periodNames = [
   "PERIOD 2",
   "PERIOD 3",
   "PERIOD 4"
+];
+
+final List<String> period5Names = [
+  "PERIOD 5 (1)",
+  "PERIOD 5 (2)",
+  "PERIOD 5 (3)",
+  "PERIOD 5 (4)"  
 ];
 
 enum MenuChoices { refresh, settings }
@@ -218,13 +225,13 @@ class _InfoBoardState extends State<InfoBoard> {
           _image1Url != ""
             ? graphicsBaseUrl + _image1Url
             : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
-          height: 100.0,
+          height: 125.0,
         );
         image2 = new Image.network(
           _image2Url != ""
             ? graphicsBaseUrl + _image2Url
             : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
-          height: 100.0);
+          height: 125.0);
       } catch (exception) {
         print(exception);
       }
@@ -252,20 +259,21 @@ class _InfoBoardState extends State<InfoBoard> {
                 new Padding(
                   padding: const EdgeInsets.only(top: 12.0),
                     child: new Container(
+                      height: 100.0,
                       decoration: new BoxDecoration(
                         color: Colors.green[700],
                         borderRadius:
-                          new BorderRadius.all(new Radius.circular(30.0))),
+                          new BorderRadius.all(new Radius.circular(30.0))
+                      ),
                       child: new Center(
-                        heightFactor: 3.0,
                         child: new Text(_bottomMessage,
                           textAlign: TextAlign.center,
                           style: new TextStyle(
                             fontFamily: "RobotoCondensed",
-                            fontSize: 22.0,
+                            fontSize: 19.0,
                             color: Colors.white
-                          )
-                        )
+                          ),
+                        ) 
                       )
                     )
                 )
@@ -386,13 +394,13 @@ class PeriodWidget extends StatelessWidget {
     if (enableCustomPeriodNames) {
        if (grade9Mode && _topMessage.contains("DAY 2")) {
         for (int i = 0; i < periodNames.length; i++) {
-          if (_period.name.contains(periodNames[i])) {
+          if (_period.name.contains(periodNames[i]) || _period.name.contains(period5Names[i])) {
             name = customPeriodNamesDay2[i];
           }
         }
       } else {
         for (int i = 0; i < periodNames.length; i++) {
-          if (_period.name.contains(periodNames[i])) {
+          if (_period.name.contains(periodNames[i]) || _period.name.contains(period5Names[i])) {
             name = customPeriodNames[i];
           }
         }
@@ -413,11 +421,11 @@ class PeriodWidget extends StatelessWidget {
               style: new TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: "RobotoCondensed",
-                fontSize: 27.0,
+                fontSize: 22.0,
                 color: Colors.white
               ),
-              textAlign: TextAlign.left
-            )
+              textAlign: TextAlign.left,
+            ),
           ),
           new Container(
             child: new Text(
@@ -427,10 +435,10 @@ class PeriodWidget extends StatelessWidget {
               style: new TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: "RobotoCondensed",
-                fontSize: 27.0,
+                fontSize: 22.0,
                 color: Colors.white
               ),
-              textAlign: TextAlign.left
+              textAlign: TextAlign.left,
             ),
           ),
         ]
