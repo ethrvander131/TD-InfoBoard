@@ -13,6 +13,7 @@ bool hideTopMessage = false;
 bool enableCustomPeriodNames = true;
 bool isSchoolToday = false;
 bool failedToGetInfoBoard = true;
+bool attemptedGetInfoBoard = false;
 
 String _topMessage = "TOP MESSAGE";
 String _bottomMessage = "BOTTOM MESSAGE";
@@ -93,7 +94,10 @@ class _InfoBoardState extends State<InfoBoard> {
       print(exception);
     }
 
+    attemptedGetInfoBoard = true;
+
     if (!mounted) return;
+
 
     setState(() {
       _topMessage = topMessage;
@@ -102,6 +106,7 @@ class _InfoBoardState extends State<InfoBoard> {
       _image1Url = image1Url;
       _image2Url = image2Url;
     });
+    
   }
 
   List<Period> getPeriods(List<List<String>> periodsList) {
@@ -143,8 +148,10 @@ class _InfoBoardState extends State<InfoBoard> {
 
     _saveValues();
     
-    if (_topMessage.contains("TODAY")) {
-      isSchoolToday = true;
+    if (_topMessage != null) {
+      if (_topMessage.contains("TODAY")) {
+        isSchoolToday = true;
+      }
     }
 
     List<Widget> menuChoices = [
@@ -274,7 +281,7 @@ class _InfoBoardState extends State<InfoBoard> {
         ),
       ) : new Container()
     ]);
-    } else if (failedToGetInfoBoard) {
+    } else if (failedToGetInfoBoard && attemptedGetInfoBoard) {
       return new Scaffold(
         appBar: new AppBar(
           elevation: 0.0,
@@ -318,7 +325,7 @@ class _InfoBoardState extends State<InfoBoard> {
       )
     );
     
-    } else {
+    } else if (!isSchoolToday && attemptedGetInfoBoard) {
       return new Scaffold(
         appBar: appBar,
         backgroundColor: Colors.green,
@@ -343,6 +350,8 @@ class _InfoBoardState extends State<InfoBoard> {
           )
         )
       );
+    } else {
+      return new Scaffold(backgroundColor: Colors.green);
     }
   }
 }
