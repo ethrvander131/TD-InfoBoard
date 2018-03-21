@@ -35,18 +35,6 @@ class _SettingsPageState extends State<SettingsPage> {
             new SizedBox(height: 8.0),
             new ListTile(
               dense: true,
-              title: new Text("Support the developer!"),
-              subtitle: new Padding(
-                padding: new EdgeInsets.only(top: 3.0),
-                child: new Text(
-                  "Open a webpage to donate"
-                )
-              ),
-              onTap: _launchDonatePage,
-            ),
-            divider,
-            new ListTile(
-              dense: true,
               title: new Text("Hide top message"),
               trailing: new Switch(
                 value: hideTopMessage,
@@ -94,7 +82,19 @@ class _SettingsPageState extends State<SettingsPage> {
                   )
                 : new Container(),
             enableCustomPeriodNames ? divider : new Container(),
-            enableCustomPeriodNames ? getCustomPeriodsFields() : new Container()
+            enableCustomPeriodNames ? getCustomPeriodsFields() : new Container(),
+            enableCustomPeriodNames ? divider : new Container(),
+            new ListTile(
+              dense: true,
+              title: new Text("Support the developer!"),
+              subtitle: new Padding(
+                  padding: new EdgeInsets.only(top: 3.0),
+                  child: new Text(
+                      "Open a webpage to donate"
+                  )
+              ),
+              onTap: _launchDonatePage,
+            )
           ],
         ));
   }
