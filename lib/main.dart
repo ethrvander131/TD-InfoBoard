@@ -15,6 +15,10 @@ bool isSchoolToday = false;
 bool failedToGetInfoBoard = true;
 bool attemptedGetInfoBoard = false;
 
+PeriodWidget currentPeriod;
+
+DateTime lastChecked;
+
 String _topMessage = "TOP MESSAGE";
 String _bottomMessage = "BOTTOM MESSAGE";
 String _image1Url = "";
@@ -235,6 +239,8 @@ class _InfoBoardState extends State<InfoBoard> {
       } catch (exception) {
         print(exception);
       }
+
+      
       
       return new Stack(children: [
       new Scaffold(
@@ -247,6 +253,7 @@ class _InfoBoardState extends State<InfoBoard> {
                 hideTopMessage ? new SizedBox(height: 56.0) : new Container(),
                 new Expanded(
                   child: new Column(
+
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children:
                       _periods.map((period) => new PeriodWidget(period)).toList()
@@ -373,7 +380,19 @@ class PeriodWidget extends StatelessWidget {
     int hour = int.parse(time24.substring(0, colonIndex));
     int minute = int.parse(time24.substring(colonIndex + 1));
 
-    var dateTime = new DateTime(0, 0, 0, hour, minute);
+    var now = new DateTime.now();
+    var dateTime = new DateTime(now.year, now.month, now.day, hour, minute);
+
+    if (lastChecked != null) {
+      if (lastChecked.isBefore(now)) {
+        if (now.isBefore(dateTime)) {
+          currentPeriod = this;
+        }
+      } 
+    } 
+
+    lastChecked = dateTime;
+
     var formatter = new DateFormat('K:m');
     String time12 = formatter.format(dateTime);
 
@@ -408,40 +427,50 @@ class PeriodWidget extends StatelessWidget {
 
     }
 
-    return new Padding(
-      padding: new EdgeInsets.only(left: 12.0, right: 12.0),
-      child: new Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          new Expanded(
-            child: new Text(
-              name.toUpperCase(),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: new TextStyle(
-                fontWeight: FontWeight.w600,
-                fontFamily: "RobotoCondensed",
-                fontSize: 22.0,
-                color: Colors.white
-              ),
-              textAlign: TextAlign.left,
-            ),
+    String startTime = change24HourTo12Hour(_period.startTime) +
+      " - " +
+      change24HourTo12Hour(_period.endTime);
+
+    return new Expanded(
+      child: new Material(
+          elevation: currentPeriod == this ? 6.0 : 0.0,
+          color: Colors.green,
+          borderRadius: new BorderRadius.all(new Radius.circular(8.0)),
+          textStyle: new TextStyle(
+              fontWeight: FontWeight.w600,
+              fontFamily: "RobotoCondensed",
+              fontSize: 22.0,
+              color: Colors.white
           ),
-          new Container(
-            child: new Text(
-              change24HourTo12Hour(_period.startTime) +
-                " - " +
-                change24HourTo12Hour(_period.endTime),
-              style: new TextStyle(
-                fontWeight: FontWeight.w600,
-                fontFamily: "RobotoCondensed",
-                fontSize: 22.0,
-                color: Colors.white
+          child: new Container(
+              decoration: new BoxDecoration(
+                  color: currentPeriod == this ? Colors.green[700] : null,
+                  borderRadius:
+                  new BorderRadius.all(new Radius.circular(30.0))
               ),
-              textAlign: TextAlign.left,
-            ),
-          ),
-        ]
+              child: new Padding(
+                  padding: new EdgeInsets.only(left: 12.0, right: 12.0),
+                  child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        new Expanded(
+                          child: new Text(
+                            name.toUpperCase(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                        new Container(
+                          child: new Text(
+                            startTime,
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ]
+                  )
+              )
+          )
       )
     );
   }
