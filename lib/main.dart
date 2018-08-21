@@ -152,12 +152,10 @@ class _InfoBoardState extends State<InfoBoard> {
     prefs.setStringList('customPeriodNamesDay2', customPeriodNamesDay2);
   }
 
-  MediaQueryData queryData;
-
   @override
   Widget build(BuildContext context) {
 
-    queryData = MediaQuery.of(context);
+    MediaQueryData queryData = MediaQuery.of(context);
     deviceWidth = queryData.size.width * queryData.devicePixelRatio;
     textSize = 19.0 + ((deviceWidth - 700)/180).roundToDouble();
 
@@ -444,7 +442,7 @@ class PeriodWidget extends StatelessWidget {
       " - " +
       change24HourTo12Hour(_period.endTime);
 
-    double padding = deviceWidth < 1200 ? 16.0 : 24.0;
+    double padding = deviceWidth < 1200 ? 12.0 : 24.0;
 
     return new Expanded(
       child: new Material(
