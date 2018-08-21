@@ -8,20 +8,20 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - Flutter (from `Pods/.symlinks/flutter/ios`)
-  - path_provider (from `Pods/.symlinks/plugins/path_provider-0.4.0/ios`)
-  - shared_preferences (from `Pods/.symlinks/plugins/shared_preferences-0.4.0/ios`)
-  - url_launcher (from `Pods/.symlinks/plugins/url_launcher-3.0.0/ios`)
+  - Flutter (from `.symlinks/flutter/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
-    :path: Pods/.symlinks/flutter/ios
+    :path: ".symlinks/flutter/ios"
   path_provider:
-    :path: Pods/.symlinks/plugins/path_provider-0.4.0/ios
+    :path: ".symlinks/plugins/path_provider/ios"
   shared_preferences:
-    :path: Pods/.symlinks/plugins/shared_preferences-0.4.0/ios
+    :path: ".symlinks/plugins/shared_preferences/ios"
   url_launcher:
-    :path: Pods/.symlinks/plugins/url_launcher-3.0.0/ios
+    :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
@@ -29,6 +29,6 @@ SPEC CHECKSUMS:
   shared_preferences: 5a1d487c427ee18fcd3ea1f2a131569481834b53
   url_launcher: 92b89c1029a0373879933c21642958c874539095
 
-PODFILE CHECKSUM: 0420ab312a523ae0eecfb1fc19ea51dd82cc17c7
+PODFILE CHECKSUM: 1e5af4103afd21ca5ead147d7b81d06f494f51a2
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.3
