@@ -45,6 +45,9 @@ final List<String> period5Names = [
 
 enum MenuChoices { refresh, settings }
 
+double deviceWidth;
+double textSize = 22.0;
+
 void main() {
   runApp(new MyApp());
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -149,8 +152,15 @@ class _InfoBoardState extends State<InfoBoard> {
     prefs.setStringList('customPeriodNamesDay2', customPeriodNamesDay2);
   }
 
+  MediaQueryData queryData;
+
   @override
   Widget build(BuildContext context) {
+
+    queryData = MediaQuery.of(context);
+    deviceWidth = queryData.size.width * queryData.devicePixelRatio;
+    if (deviceWidth <= 800) {textSize = 20.0;}
+    else if (deviceWidth > 1200) {textSize = 24.0;}
 
     _bottomMessage = _bottomMessage == "" ? "NO MESSAGE" : _bottomMessage;
 
@@ -239,8 +249,6 @@ class _InfoBoardState extends State<InfoBoard> {
       } catch (exception) {
         print(exception);
       }
-
-      
       
       return new Stack(children: [
       new Scaffold(
@@ -252,37 +260,43 @@ class _InfoBoardState extends State<InfoBoard> {
               children: [
                 hideTopMessage ? new SizedBox(height: 56.0) : new Container(),
                 new Expanded(
+                  flex: 5,
                   child: new Column(
-
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children:
                       _periods.map((period) => new PeriodWidget(period)).toList()
                   )
                 ),
-                new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [image1, image2],
-                ),
-                new Padding(
-                  padding: const EdgeInsets.only(top: 12.0),
+                new Container(height: 12.0,),
+                new Expanded(
+                  flex: 2,
+                  child: new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [image1, image2],
+                ))
+                ,
+                new Expanded(
+                  flex: 2,
+                  child: new Padding(
+                    padding: const EdgeInsets.only(top: 12.0),
                     child: new Container(
-                      height: 100.0,
-                      decoration: new BoxDecoration(
-                        color: Colors.green[700],
-                        borderRadius:
-                          new BorderRadius.all(new Radius.circular(30.0))
-                      ),
-                      child: new Center(
-                        child: new Text(_bottomMessage,
-                          textAlign: TextAlign.center,
-                          style: new TextStyle(
-                            fontFamily: "RobotoCondensed",
-                            fontSize: 19.0,
-                            color: Colors.white
-                          ),
-                        ) 
-                      )
+                        decoration: new BoxDecoration(
+                            color: Colors.green[700],
+                            borderRadius:
+                            new BorderRadius.all(new Radius.circular(30.0))
+                        ),
+                        child: new Center(
+                            child: new Text(_bottomMessage,
+                              textAlign: TextAlign.center,
+                              style: new TextStyle(
+                                  fontFamily: "RobotoCondensed",
+                                  fontSize: textSize - 2,
+                                  color: Colors.white
+                              ),
+                            )
+                        )
                     )
+                  )
                 )
               ])
             )
@@ -438,7 +452,7 @@ class PeriodWidget extends StatelessWidget {
           textStyle: new TextStyle(
               fontWeight: FontWeight.w600,
               fontFamily: "RobotoCondensed",
-              fontSize: 22.0,
+              fontSize: textSize,
               color: Colors.white
           ),
           child: new Container(
