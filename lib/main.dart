@@ -90,15 +90,20 @@ class _InfoBoardState extends State<InfoBoard> {
     try {
       var request = await httpClient.getUrl(Uri.parse(url));
       var response = await request.close();
-      if (response.statusCode == HttpStatus.OK) {
+      if (response.statusCode == HttpStatus.ok) {
         failedToGetInfoBoard = false;
-        var json = await response.transform(UTF8.decoder).join();
-        var data = JSON.decode(json);
+        var jsonData = await response.transform(utf8.decoder).join();
+        var data = json.decode(jsonData);
         topMessage = data['5'][1];
+        print("topMessage loaded successfully.");
         bottomMessage = data['6'][1];
+        print("bottomMessage loaded successfully.");
         image1Url = data['7'];
+        print("image1Url loaded successfully.");
         image2Url = data['8'];
+        print("image2Url loaded successfully.");
         periods = getPeriods(data['4']);
+        print("periods loaded successfully.");
       } else { failedToGetInfoBoard = true; }
     } catch (exception) {
       failedToGetInfoBoard = true;
@@ -106,9 +111,7 @@ class _InfoBoardState extends State<InfoBoard> {
     }
 
     attemptedGetInfoBoard = true;
-
     if (!mounted) return;
-
 
     setState(() {
       _topMessage = topMessage;
@@ -117,10 +120,12 @@ class _InfoBoardState extends State<InfoBoard> {
       _image1Url = image1Url;
       _image2Url = image2Url;
     });
+
+    print(failedToGetInfoBoard);
     
   }
 
-  List<Period> getPeriods(List<List<String>> periodsList) {
+  List<Period> getPeriods(List<dynamic> periodsList) {
     List<Period> periods = [];
 
     if (periodsList.length > 0) {
