@@ -95,15 +95,10 @@ class _InfoBoardState extends State<InfoBoard> {
         var jsonData = await response.transform(utf8.decoder).join();
         var data = json.decode(jsonData);
         topMessage = data['5'][1];
-        print("topMessage loaded successfully.");
         bottomMessage = data['6'][1];
-        print("bottomMessage loaded successfully.");
         image1Url = data['7'];
-        print("image1Url loaded successfully.");
         image2Url = data['8'];
-        print("image2Url loaded successfully.");
         periods = getPeriods(data['4']);
-        print("periods loaded successfully.");
       } else { failedToGetInfoBoard = true; }
     } catch (exception) {
       failedToGetInfoBoard = true;
@@ -120,9 +115,6 @@ class _InfoBoardState extends State<InfoBoard> {
       _image1Url = image1Url;
       _image2Url = image2Url;
     });
-
-    print(failedToGetInfoBoard);
-    
   }
 
   List<Period> getPeriods(List<dynamic> periodsList) {
@@ -456,7 +448,7 @@ class PeriodWidget extends StatelessWidget {
                   new BorderRadius.all(new Radius.circular(30.0))
               ),
               child: new Padding(
-                  padding: new EdgeInsets.only(left: 12.0, right: 12.0),
+                  padding: new EdgeInsets.only(left: 24.0, right: 24.0),
                   child: new Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
