@@ -45,8 +45,8 @@ final List<String> period5Names = [
 
 enum MenuChoices { refresh, settings }
 
+double textSize;
 double deviceWidth;
-double textSize = 22.0;
 
 void main() {
   runApp(new MyApp());
@@ -159,8 +159,7 @@ class _InfoBoardState extends State<InfoBoard> {
 
     queryData = MediaQuery.of(context);
     deviceWidth = queryData.size.width * queryData.devicePixelRatio;
-    if (deviceWidth <= 800) {textSize = 20.0;}
-    else if (deviceWidth > 1200) {textSize = 24.0;}
+    textSize = 19.0 + ((deviceWidth - 700)/180).roundToDouble();
 
     _bottomMessage = _bottomMessage == "" ? "NO MESSAGE" : _bottomMessage;
 
@@ -249,7 +248,7 @@ class _InfoBoardState extends State<InfoBoard> {
       } catch (exception) {
         print(exception);
       }
-      
+
       return new Stack(children: [
       new Scaffold(
         appBar: hideTopMessage ? null : appBar,
@@ -267,7 +266,7 @@ class _InfoBoardState extends State<InfoBoard> {
                       _periods.map((period) => new PeriodWidget(period)).toList()
                   )
                 ),
-                new Container(height: 12.0,),
+                new Container(height: 12.0),
                 new Expanded(
                   flex: 2,
                   child: new Row(
@@ -445,6 +444,8 @@ class PeriodWidget extends StatelessWidget {
       " - " +
       change24HourTo12Hour(_period.endTime);
 
+    double padding = deviceWidth < 1200 ? 16.0 : 24.0;
+
     return new Expanded(
       child: new Material(
           color: Colors.green,
@@ -462,7 +463,7 @@ class PeriodWidget extends StatelessWidget {
                   new BorderRadius.all(new Radius.circular(30.0))
               ),
               child: new Padding(
-                  padding: new EdgeInsets.only(left: 24.0, right: 24.0),
+                  padding: new EdgeInsets.only(left: padding, right: padding),
                   child: new Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
