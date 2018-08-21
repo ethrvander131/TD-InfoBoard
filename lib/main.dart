@@ -224,6 +224,9 @@ class _InfoBoardState extends State<InfoBoard> {
       actions: menuChoices
     );
 
+    // TODO: Remove for release
+    isSchoolToday = true;
+
     if (isSchoolToday) {
 
       Image image1;
@@ -438,7 +441,6 @@ class PeriodWidget extends StatelessWidget {
 
     return new Expanded(
       child: new Material(
-          elevation: currentPeriod == this ? 6.0 : 0.0,
           color: Colors.green,
           borderRadius: new BorderRadius.all(new Radius.circular(8.0)),
           textStyle: new TextStyle(
