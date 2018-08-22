@@ -162,6 +162,8 @@ class _InfoBoardState extends State<InfoBoard> {
     _bottomMessage = _bottomMessage == "" ? "NO MESSAGE" : _bottomMessage;
 
     _saveValues();
+
+    isSchoolToday = true;
     
     if (_topMessage != null) {
       if (_topMessage.contains("TODAY")) {
