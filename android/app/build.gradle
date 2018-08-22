@@ -27,11 +27,11 @@ android {
         disable 'InvalidPackage'
     }
     defaultConfig {
-        applicationId "com.nxtdevelop.tdinfoboard"
+        applicationId "com.nxtdevelop.infoboard"
         minSdkVersion 16
         targetSdkVersion 27
         versionCode 1
-        versionName "1"
+        versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 }

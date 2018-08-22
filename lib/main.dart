@@ -223,9 +223,6 @@ class _InfoBoardState extends State<InfoBoard> {
       actions: menuChoices
     );
 
-    // TODO: Remove for release
-    isSchoolToday = true;
-
     if (isSchoolToday) {
 
       Image image1;
