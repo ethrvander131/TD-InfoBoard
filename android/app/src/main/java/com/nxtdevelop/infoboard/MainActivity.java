@@ -1,4 +1,4 @@
-package com.example.infoboard;
+package com.nxtdevelop.infoboard;
 
 import android.os.Bundle;
 
