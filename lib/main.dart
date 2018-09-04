@@ -161,6 +161,8 @@ class _InfoBoardState extends State<InfoBoard> {
 
     _bottomMessage = _bottomMessage == "" ? "NO MESSAGE" : _bottomMessage;
 
+    _bottomMessage = _bottomMessage.replaceAll('<BR>', '\n');
+
     _saveValues();
 
     isSchoolToday = true;
@@ -293,7 +295,7 @@ class _InfoBoardState extends State<InfoBoard> {
                         )
                     )
                   )
-                )
+                ),
               ])
             )
       ),
@@ -409,7 +411,10 @@ class PeriodWidget extends StatelessWidget {
     if (minute < 10) {
       colonIndex = time12.indexOf(":");
       String minuteString = "0" + minute.toString();
-      return time12.replaceRange(colonIndex + 1, time12.length, minuteString);
+      time12 = time12.replaceRange(colonIndex + 1, time12.length, minuteString);
+    }
+    if (hour == 12 || hour == 0) {
+      return time12.replaceFirst('0', '12');
     } else {
       return time12;
     }
