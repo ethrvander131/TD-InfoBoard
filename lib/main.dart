@@ -123,6 +123,11 @@ class _InfoBoardState extends State<InfoBoard> {
   List<Period> getPeriods(List<dynamic> periodsList) {
     List<Period> periods = [];
 
+    if (periodsList == null) {
+      print("periods is null");
+      return periods;
+    }
+
     if (periodsList.length > 0) {
       for (var p in periodsList) {
         periods.add(new Period(p[0], p[1], p[2]));
@@ -161,7 +166,7 @@ class _InfoBoardState extends State<InfoBoard> {
 
     _bottomMessage = _bottomMessage == "" ? "NO MESSAGE" : _bottomMessage;
 
-    _bottomMessage = _bottomMessage.replaceAll('<BR>', '\n');
+    _bottomMessage = _bottomMessage == null ? _bottomMessage :_bottomMessage.replaceAll('<BR>', '\n');
 
     _saveValues();
 
@@ -210,13 +215,17 @@ class _InfoBoardState extends State<InfoBoard> {
       )
     ];
 
+    if (_periods == null || _periods.isEmpty) {
+      isSchoolToday = false;
+    }
+
     AppBar appBar = new AppBar(
       elevation: 0.0,
       backgroundColor: new Color(0xFFFFFF),
       title: new Padding(
         padding: new EdgeInsets.only(left: 12.0),
         child: new Text(
-          hideTopMessage ? "" : _topMessage,
+          hideTopMessage || !isSchoolToday ? "" : _topMessage,
           style: new TextStyle(
             fontFamily: "RobotoCondensed",
             fontSize: 24.0,
@@ -226,6 +235,8 @@ class _InfoBoardState extends State<InfoBoard> {
       ),
       actions: menuChoices
     );
+    print("isSchoolToday: ${isSchoolToday}");
+    print("failedToGetInfoBoard: ${failedToGetInfoBoard}");
 
     if (isSchoolToday) {
 
@@ -439,7 +450,6 @@ class PeriodWidget extends StatelessWidget {
           }
         }
       }
-
     }
 
     String startTime = change24HourTo12Hour(_period.startTime) +
@@ -562,7 +572,6 @@ Widget getCustomPeriodsFields() {
           },
         ),
         )
-        
         ],
       )
       );
