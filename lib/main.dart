@@ -143,7 +143,7 @@ class _InfoBoardState extends State<InfoBoard> {
     customPeriodNames = prefs.getStringList('customPeriodNames') ??
       ["PERIOD 1", "PERIOD 2", "PERIOD 3", "PERIOD 4"];
 
-    customPeriodNamesDay2 = prefs.getStringList('customPeriodNames2') ??
+    customPeriodNamesDay2 = prefs.getStringList('customPeriodNamesDay2') ??
       ["PERIOD 1", "PERIOD 2", "PERIOD 3", "PERIOD 4"];
   }
 
