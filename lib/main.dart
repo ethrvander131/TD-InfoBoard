@@ -124,7 +124,6 @@ class _InfoBoardState extends State<InfoBoard> {
     List<Period> periods = [];
 
     if (periodsList == null) {
-      print("periods is null");
       return periods;
     }
 
@@ -235,8 +234,6 @@ class _InfoBoardState extends State<InfoBoard> {
       ),
       actions: menuChoices
     );
-    print("isSchoolToday: ${isSchoolToday}");
-    print("failedToGetInfoBoard: ${failedToGetInfoBoard}");
 
     if (isSchoolToday) {
 
