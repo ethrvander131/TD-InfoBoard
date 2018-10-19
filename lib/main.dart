@@ -261,7 +261,8 @@ class _InfoBoardState extends State<InfoBoard> {
         Scaffold(
             appBar: hideTopMessage ? null : appBar,
             backgroundColor: Colors.green,
-            body: Column(
+            body: SafeArea(
+                child: Column(
               children: <Widget>[
                 Expanded(
                     flex: 6,
@@ -414,7 +415,7 @@ class _InfoBoardState extends State<InfoBoard> {
                               ],
                             ))))
               ],
-            )),
+            ))),
         hideTopMessage
             ? Scaffold(
                 backgroundColor: Color(0xFFFFFF),
