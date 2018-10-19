@@ -40,13 +40,14 @@ final List<String> period5Names = [
   "PERIOD 5 (1)",
   "PERIOD 5 (2)",
   "PERIOD 5 (3)",
-  "PERIOD 5 (4)"  
+  "PERIOD 5 (4)"
 ];
 
 enum MenuChoices { refresh, settings }
 
 double textSize;
 double deviceWidth;
+double padding;
 
 void main() {
   runApp(new MyApp());
@@ -57,10 +58,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: "TDChristian InfoBoard",
-      home: new InfoBoard(),
-      theme: new ThemeData(primaryColor: Colors.green)
-    );
+        title: "TDChristian InfoBoard",
+        home: new InfoBoard(),
+        theme: new ThemeData(primaryColor: Colors.green));
   }
 }
 
@@ -81,7 +81,7 @@ class _InfoBoardState extends State<InfoBoard> {
 
   _getInfoBoard() async {
     final String url =
-      'http://splash.tdchristian.ca/apps/if2/getScreenData.php';
+        'http://splash.tdchristian.ca/apps/if2/getScreenData.php';
     HttpClient httpClient = new HttpClient();
 
     String topMessage;
@@ -102,7 +102,9 @@ class _InfoBoardState extends State<InfoBoard> {
         image1Url = data['7'];
         image2Url = data['8'];
         periods = getPeriods(data['4']);
-      } else { failedToGetInfoBoard = true; }
+      } else {
+        failedToGetInfoBoard = true;
+      }
     } catch (exception) {
       failedToGetInfoBoard = true;
       print(exception);
@@ -141,10 +143,10 @@ class _InfoBoardState extends State<InfoBoard> {
     hideTopMessage = prefs.getBool('hideTopMessage') ?? false;
     enableCustomPeriodNames = prefs.getBool('enableCustomPeriodNames') ?? false;
     customPeriodNames = prefs.getStringList('customPeriodNames') ??
-      ["PERIOD 1", "PERIOD 2", "PERIOD 3", "PERIOD 4"];
+        ["PERIOD 1", "PERIOD 2", "PERIOD 3", "PERIOD 4"];
 
     customPeriodNamesDay2 = prefs.getStringList('customPeriodNamesDay2') ??
-      ["PERIOD 1", "PERIOD 2", "PERIOD 3", "PERIOD 4"];
+        ["PERIOD 1", "PERIOD 2", "PERIOD 3", "PERIOD 4"];
   }
 
   _saveValues() async {
@@ -158,19 +160,20 @@ class _InfoBoardState extends State<InfoBoard> {
 
   @override
   Widget build(BuildContext context) {
-
     MediaQueryData queryData = MediaQuery.of(context);
     deviceWidth = queryData.size.width * queryData.devicePixelRatio;
-    textSize = 19.0 + ((deviceWidth - 700)/180).roundToDouble();
+    textSize = 19.0 + ((deviceWidth - 700) / 180).roundToDouble();
 
     _bottomMessage = _bottomMessage == "" ? "NO MESSAGE" : _bottomMessage;
 
-    _bottomMessage = _bottomMessage == null ? _bottomMessage :_bottomMessage.replaceAll('<BR>', '\n');
+    _bottomMessage = _bottomMessage == null
+        ? _bottomMessage
+        : _bottomMessage.replaceAll('<BR>', '\n');
 
     _saveValues();
 
     isSchoolToday = true;
-    
+
     if (_topMessage != null) {
       if (_topMessage.contains("TODAY")) {
         isSchoolToday = true;
@@ -179,39 +182,32 @@ class _InfoBoardState extends State<InfoBoard> {
 
     List<Widget> menuChoices = [
       new PopupMenuButton<MenuChoices>(
-        onSelected: (MenuChoices result) {
-          setState(() {
-            if (result == MenuChoices.refresh) {
-              _getInfoBoard();
-            } else if (result == MenuChoices.settings) {
-              Navigator.push(
-                context,
-                new MaterialPageRoute(
-                  builder: (context) => new SettingsPage()
-                )
-              );
-            }
-            }
-          );
-        },
-        itemBuilder: (BuildContext context) =>
-          <PopupMenuEntry<MenuChoices>>[
-            new PopupMenuItem<MenuChoices>(
-              value: MenuChoices.refresh,
-              child: new ListTile(
-                leading: new Icon(Icons.refresh),
-                title: new Text('REFRESH'),
-              ),
-            ),
-            new PopupMenuItem<MenuChoices>(
-              value: MenuChoices.settings,
-              child: new ListTile(
-                leading: new Icon(Icons.settings),
-                title: new Text("SETTINGS")
-              )
-            )
-          ]
-      )
+          onSelected: (MenuChoices result) {
+            setState(() {
+              if (result == MenuChoices.refresh) {
+                _getInfoBoard();
+              } else if (result == MenuChoices.settings) {
+                Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                        builder: (context) => new SettingsPage()));
+              }
+            });
+          },
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuChoices>>[
+                new PopupMenuItem<MenuChoices>(
+                  value: MenuChoices.refresh,
+                  child: new ListTile(
+                    leading: new Icon(Icons.refresh),
+                    title: new Text('REFRESH'),
+                  ),
+                ),
+                new PopupMenuItem<MenuChoices>(
+                    value: MenuChoices.settings,
+                    child: new ListTile(
+                        leading: new Icon(Icons.settings),
+                        title: new Text("SETTINGS")))
+              ])
     ];
 
     if (_periods == null || _periods.isEmpty) {
@@ -219,172 +215,153 @@ class _InfoBoardState extends State<InfoBoard> {
     }
 
     AppBar appBar = new AppBar(
-      elevation: 0.0,
-      backgroundColor: new Color(0xFFFFFF),
-      title: new Padding(
-        padding: new EdgeInsets.only(left: 12.0),
-        child: new Text(
-          hideTopMessage || !isSchoolToday ? "" : _topMessage,
-          style: new TextStyle(
-            fontFamily: "RobotoCondensed",
-            fontSize: 24.0,
-            fontWeight: FontWeight.w600
+        elevation: 0.0,
+        backgroundColor: new Color(0xFFFFFF),
+        title: new Padding(
+          padding: new EdgeInsets.only(left: 12.0),
+          child: new Text(
+            hideTopMessage || !isSchoolToday ? "" : _topMessage,
+            style: new TextStyle(
+                fontFamily: "RobotoCondensed",
+                fontSize: 24.0,
+                fontWeight: FontWeight.w600),
           ),
         ),
-      ),
-      actions: menuChoices
-    );
+        actions: menuChoices);
 
     if (isSchoolToday) {
-
       Image image1;
       Image image2;
 
       try {
         image1 = new Image.network(
           _image1Url != ""
-            ? graphicsBaseUrl + _image1Url
-            : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
-          height: 125.0,
+              ? graphicsBaseUrl + _image1Url
+              : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
+          height: 90.0,
         );
         image2 = new Image.network(
-          _image2Url != ""
-            ? graphicsBaseUrl + _image2Url
-            : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
-          height: 125.0);
+            _image2Url != ""
+                ? graphicsBaseUrl + _image2Url
+                : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
+            height: 90.0);
       } catch (exception) {
         print(exception);
       }
 
+      padding = deviceWidth < 1200 ? 24.0 : 32.0;
+
       return new Stack(children: [
-      new Scaffold(
-        appBar: hideTopMessage ? null : appBar,
-        backgroundColor: Colors.green,
-        body: new Padding(
-          padding: new EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-            child: new Column(
-              children: [
-                hideTopMessage ? new SizedBox(height: 56.0) : new Container(),
-                new Expanded(
-                  flex: 5,
-                  child: new Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children:
-                      _periods.map((period) => new PeriodWidget(period)).toList()
-                  )
-                ),
-                new Container(height: 12.0),
-                new Expanded(
-                  flex: 2,
-                  child: new Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [image1, image2],
-                ))
-                ,
-                new Expanded(
-                  flex: 2,
-                  child: new Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
-                    child: new Container(
-                        decoration: new BoxDecoration(
-                            color: Colors.green[700],
-                            borderRadius:
-                            new BorderRadius.all(new Radius.circular(30.0))
-                        ),
-                        child: new Center(
-                            child: new Text(_bottomMessage,
-                              textAlign: TextAlign.center,
-                              style: new TextStyle(
-                                  fontFamily: "RobotoCondensed",
-                                  fontSize: textSize - 2,
-                                  color: Colors.white
+        new Scaffold(
+            appBar: hideTopMessage ? null : appBar,
+            backgroundColor: Colors.green,
+            body: new Padding(
+                padding: new EdgeInsets.only(
+                    left: padding, right: padding, bottom: padding),
+                child: new Column(children: [
+                  hideTopMessage ? new SizedBox(height: 56.0) : new Container(),
+                  new Expanded(
+                      flex: 4,
+                      child: new Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: _periods
+                              .map((period) => new PeriodWidget(period))
+                              .toList())),
+                  new Container(height: 12.0),
+                  new Expanded(
+                      flex: 2,
+                      child: new Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(right: 12.0),
+                              child: Column(
+                                children: <Widget>[image1, image2],
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                               ),
-                            )
-                        )
-                    )
-                  )
-                ),
-              ])
-            )
-      ),
-      hideTopMessage ? new Scaffold(
-        backgroundColor: new Color(0xFFFFFF),
-        appBar: new AppBar(
-          backgroundColor: new Color(0xFFFFFF),
-          elevation: 0.0,
-          actions: menuChoices
-        ),
-      ) : new Container()
-    ]);
+                            ),
+                            new Expanded(
+                                child: Container(
+                                    decoration: new BoxDecoration(
+                                        color: Colors.green[700],
+                                        borderRadius: new BorderRadius.all(
+                                            new Radius.circular(30.0))),
+                                    child: Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: new Center(
+                                            child: new Text(
+                                          _bottomMessage,
+                                          textAlign: TextAlign.center,
+                                          style: new TextStyle(
+                                              fontFamily: "RobotoCondensed",
+                                              fontSize: textSize - 2,
+                                              color: Colors.white),
+                                        ))))),
+                          ])),
+                  Expanded(child: Container(), flex: 1)
+                ]))),
+        hideTopMessage
+            ? new Scaffold(
+                backgroundColor: new Color(0xFFFFFF),
+                appBar: new AppBar(
+                    backgroundColor: new Color(0xFFFFFF),
+                    elevation: 0.0,
+                    actions: menuChoices),
+              )
+            : new Container()
+      ]);
     } else if (failedToGetInfoBoard && attemptedGetInfoBoard) {
       return new Scaffold(
-        appBar: new AppBar(
-          elevation: 0.0,
+          appBar: new AppBar(
+              elevation: 0.0,
+              backgroundColor: Colors.green,
+              actions: menuChoices),
           backgroundColor: Colors.green,
-          actions: menuChoices
-        ),
-      backgroundColor: Colors.green,
-      body: new Center(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            new Text(
-              '!',
-              style: new TextStyle(
-                fontWeight: FontWeight.w600,
-                fontFamily: "RobotoCondensed",
-                fontSize: 250.0,
-                color: Colors.white
-              )
-            ),
-            new Text(
-              'FAILED TO LOAD INFOBOARD',
-              style: new TextStyle(
-                fontWeight: FontWeight.w600,
-                fontFamily: "RobotoCondensed",
-                fontSize: 24.0,
-                color: Colors.white
-              )
-            ),
-            new Text(
-              'PLEASE CHECK YOUR INTERNET CONNECTION',
-              style: new TextStyle(
-                fontWeight: FontWeight.w400,
-                fontFamily: "RobotoCondensed",
-                fontSize: 18.0,
-                color: Colors.white
-              )
-            )
-          ],
-        )
-      )
-    );
-    
+          body: new Center(
+              child: new Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              new Text('!',
+                  style: new TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontFamily: "RobotoCondensed",
+                      fontSize: 250.0,
+                      color: Colors.white)),
+              new Text('FAILED TO LOAD INFOBOARD',
+                  style: new TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontFamily: "RobotoCondensed",
+                      fontSize: 24.0,
+                      color: Colors.white)),
+              new Text('PLEASE CHECK YOUR INTERNET CONNECTION',
+                  style: new TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontFamily: "RobotoCondensed",
+                      fontSize: 18.0,
+                      color: Colors.white))
+            ],
+          )));
     } else if (!isSchoolToday && attemptedGetInfoBoard) {
       return new Scaffold(
-        appBar: appBar,
-        backgroundColor: Colors.green,
-        body: new Center(
-          child: new Column(
+          appBar: appBar,
+          backgroundColor: Colors.green,
+          body: new Center(
+              child: new Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               new Image(
                 image: new AssetImage('assets/happyface.png'),
                 height: 200.0,
               ),
-              new Text(
-                'NO SCHOOL TODAY',
-                style: new TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontFamily: "RobotoCondensed",
-                  fontSize: 36.0,
-                  color: Colors.white
-                )
-              )
+              new Text('NOTHING TO SHOW HERE',
+                  style: new TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontFamily: "RobotoCondensed",
+                      fontSize: 36.0,
+                      color: Colors.white))
             ],
-          )
-        )
-      );
+          )));
     } else {
       return new Scaffold(backgroundColor: Colors.green);
     }
@@ -408,8 +385,8 @@ class PeriodWidget extends StatelessWidget {
         if (now.isBefore(dateTime)) {
           currentPeriod = this;
         }
-      } 
-    } 
+      }
+    }
 
     lastChecked = dateTime;
 
@@ -430,19 +407,20 @@ class PeriodWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     String name = _period.name;
 
     if (enableCustomPeriodNames) {
-       if (grade9Mode && _topMessage.contains("DAY 2")) {
+      if (grade9Mode && _topMessage.contains("DAY 2")) {
         for (int i = 0; i < periodNames.length; i++) {
-          if (_period.name.contains(periodNames[i]) || _period.name.contains(period5Names[i])) {
+          if (_period.name.contains(periodNames[i]) ||
+              _period.name.contains(period5Names[i])) {
             name = customPeriodNamesDay2[i];
           }
         }
       } else {
         for (int i = 0; i < periodNames.length; i++) {
-          if (_period.name.contains(periodNames[i]) || _period.name.contains(period5Names[i])) {
+          if (_period.name.contains(periodNames[i]) ||
+              _period.name.contains(period5Names[i])) {
             name = customPeriodNames[i];
           }
         }
@@ -450,52 +428,41 @@ class PeriodWidget extends StatelessWidget {
     }
 
     String startTime = change24HourTo12Hour(_period.startTime) +
-      " - " +
-      change24HourTo12Hour(_period.endTime);
-
-    double padding = deviceWidth < 1200 ? 12.0 : 24.0;
+        " - " +
+        change24HourTo12Hour(_period.endTime);
 
     return new Expanded(
-      child: new Material(
-          color: Colors.green,
-          borderRadius: new BorderRadius.all(new Radius.circular(8.0)),
-          textStyle: new TextStyle(
-              fontWeight: FontWeight.w600,
-              fontFamily: "RobotoCondensed",
-              fontSize: textSize,
-              color: Colors.white
-          ),
-          child: new Container(
-              decoration: new BoxDecoration(
-                  color: currentPeriod == this ? Colors.green[700] : null,
-                  borderRadius:
-                  new BorderRadius.all(new Radius.circular(30.0))
-              ),
-              child: new Padding(
-                  padding: new EdgeInsets.only(left: padding, right: padding),
-                  child: new Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        new Expanded(
-                          child: new Text(
-                            name.toUpperCase(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.left,
-                          ),
+        child: new Material(
+            color: Colors.green,
+            borderRadius: new BorderRadius.all(new Radius.circular(8.0)),
+            textStyle: new TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: "RobotoCondensed",
+                fontSize: textSize,
+                color: Colors.white),
+            child: new Container(
+                decoration: new BoxDecoration(
+                    color: currentPeriod == this ? Colors.green[700] : null,
+                    borderRadius:
+                        new BorderRadius.all(new Radius.circular(30.0))),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      new Expanded(
+                        child: new Text(
+                          name.toUpperCase(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.left,
                         ),
-                        new Container(
-                          child: new Text(
-                            startTime,
-                            textAlign: TextAlign.left,
-                          ),
+                      ),
+                      new Container(
+                        child: new Text(
+                          startTime,
+                          textAlign: TextAlign.left,
                         ),
-                      ]
-                  )
-              )
-          )
-      )
-    );
+                      ),
+                    ]))));
   }
 }
 
@@ -514,21 +481,18 @@ Widget getCustomPeriodsFields() {
               maxLines: 1,
             ),
           ),
-          
-        new Expanded(
-          child: new TextField(
-          decoration: new InputDecoration(
-              labelText: customPeriodNames[i],
-              labelStyle: new TextStyle(color: Colors.black87)),
-          onChanged: (String input) {
-            customPeriodNames[i] = input;
-          },
-        ),
-        )
-        
+          new Expanded(
+            child: new TextField(
+              decoration: new InputDecoration(
+                  labelText: customPeriodNames[i],
+                  labelStyle: new TextStyle(color: Colors.black87)),
+              onChanged: (String input) {
+                customPeriodNames[i] = input;
+              },
+            ),
+          )
         ],
-      )
-      );
+      ));
     }
   }
   if (grade9Mode) {
@@ -558,20 +522,18 @@ Widget getCustomPeriodsFields() {
               maxLines: 1,
             ),
           ),
-          
-        new Expanded(
-          child: new TextField(
-          decoration: new InputDecoration(
-              labelText: customPeriodNamesDay2[i],
-              labelStyle: new TextStyle(color: Colors.black87)),
-          onChanged: (String input) {
-            customPeriodNamesDay2[i] = input;
-          },
-        ),
-        )
+          new Expanded(
+            child: new TextField(
+              decoration: new InputDecoration(
+                  labelText: customPeriodNamesDay2[i],
+                  labelStyle: new TextStyle(color: Colors.black87)),
+              onChanged: (String input) {
+                customPeriodNamesDay2[i] = input;
+              },
+            ),
+          )
         ],
-      )
-      );
+      ));
     }
   }
 
