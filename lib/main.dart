@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'period.dart';
 import 'SettingsPage.dart';
 
@@ -50,17 +51,17 @@ double deviceWidth;
 double padding;
 
 void main() {
-  runApp(new MyApp());
+  runApp(MyApp());
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return MaterialApp(
         title: "TDChristian InfoBoard",
-        home: new InfoBoard(),
-        theme: new ThemeData(primaryColor: Colors.green));
+        home: InfoBoard(),
+        theme: ThemeData(primaryColor: Colors.green));
   }
 }
 
@@ -68,7 +69,7 @@ class InfoBoard extends StatefulWidget {
   InfoBoard({Key key}) : super(key: key);
 
   @override
-  _InfoBoardState createState() => new _InfoBoardState();
+  _InfoBoardState createState() => _InfoBoardState();
 }
 
 class _InfoBoardState extends State<InfoBoard> {
@@ -82,7 +83,7 @@ class _InfoBoardState extends State<InfoBoard> {
   _getInfoBoard() async {
     final String url =
         'http://splash.tdchristian.ca/apps/if2/getScreenData.php';
-    HttpClient httpClient = new HttpClient();
+    HttpClient httpClient = HttpClient();
 
     String topMessage;
     String bottomMessage;
@@ -131,7 +132,7 @@ class _InfoBoardState extends State<InfoBoard> {
 
     if (periodsList.length > 0) {
       for (var p in periodsList) {
-        periods.add(new Period(p[0], p[1], p[2]));
+        periods.add(Period(p[0], p[1], p[2]));
       }
     }
     return periods;
@@ -181,32 +182,29 @@ class _InfoBoardState extends State<InfoBoard> {
     }
 
     List<Widget> menuChoices = [
-      new PopupMenuButton<MenuChoices>(
+      PopupMenuButton<MenuChoices>(
           onSelected: (MenuChoices result) {
             setState(() {
               if (result == MenuChoices.refresh) {
                 _getInfoBoard();
               } else if (result == MenuChoices.settings) {
-                Navigator.push(
-                    context,
-                    new MaterialPageRoute(
-                        builder: (context) => new SettingsPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SettingsPage()));
               }
             });
           },
           itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuChoices>>[
-                new PopupMenuItem<MenuChoices>(
+                PopupMenuItem<MenuChoices>(
                   value: MenuChoices.refresh,
-                  child: new ListTile(
-                    leading: new Icon(Icons.refresh),
-                    title: new Text('REFRESH'),
+                  child: ListTile(
+                    leading: Icon(Icons.refresh),
+                    title: Text('REFRESH'),
                   ),
                 ),
-                new PopupMenuItem<MenuChoices>(
+                PopupMenuItem<MenuChoices>(
                     value: MenuChoices.settings,
-                    child: new ListTile(
-                        leading: new Icon(Icons.settings),
-                        title: new Text("SETTINGS")))
+                    child: ListTile(
+                        leading: Icon(Icons.settings), title: Text("SETTINGS")))
               ])
     ];
 
@@ -214,14 +212,14 @@ class _InfoBoardState extends State<InfoBoard> {
       isSchoolToday = false;
     }
 
-    AppBar appBar = new AppBar(
+    AppBar appBar = AppBar(
         elevation: 0.0,
-        backgroundColor: new Color(0xFFFFFF),
-        title: new Padding(
-          padding: new EdgeInsets.only(left: 12.0),
-          child: new Text(
+        backgroundColor: Color(0xFFFFFF),
+        title: Padding(
+          padding: EdgeInsets.only(left: 12.0),
+          child: Text(
             hideTopMessage || !isSchoolToday ? "" : _topMessage,
-            style: new TextStyle(
+            style: TextStyle(
                 fontFamily: "RobotoCondensed",
                 fontSize: 24.0,
                 fontWeight: FontWeight.w600),
@@ -234,13 +232,13 @@ class _InfoBoardState extends State<InfoBoard> {
       Image image2;
 
       try {
-        image1 = new Image.network(
+        image1 = Image.network(
           _image1Url != ""
               ? graphicsBaseUrl + _image1Url
               : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
           height: 90.0,
         );
-        image2 = new Image.network(
+        image2 = Image.network(
             _image2Url != ""
                 ? graphicsBaseUrl + _image2Url
                 : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
@@ -251,91 +249,207 @@ class _InfoBoardState extends State<InfoBoard> {
 
       padding = deviceWidth < 1200 ? 24.0 : 32.0;
 
-      return new Stack(children: [
-        new Scaffold(
+      _launchPage(String url) async {
+        if (await canLaunch(url)) {
+          await launch(url);
+        } else {
+          throw 'Could not launch $url';
+        }
+      }
+
+      return Stack(children: [
+        Scaffold(
             appBar: hideTopMessage ? null : appBar,
             backgroundColor: Colors.green,
-            body: new Padding(
-                padding: new EdgeInsets.only(
-                    left: padding, right: padding, bottom: padding),
-                child: new Column(children: [
-                  hideTopMessage ? new SizedBox(height: 56.0) : new Container(),
-                  new Expanded(
-                      flex: 4,
-                      child: new Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: _periods
-                              .map((period) => new PeriodWidget(period))
-                              .toList())),
-                  new Container(height: 12.0),
-                  new Expanded(
-                      flex: 2,
-                      child: new Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(right: 12.0),
+            body: Column(
+              children: <Widget>[
+                Expanded(
+                    flex: 6,
+                    child: Padding(
+                        padding: EdgeInsets.only(
+                            left: padding,
+                            right: padding,
+                            bottom: padding - 16.0),
+                        child: Column(children: [
+                          hideTopMessage ? SizedBox(height: 56.0) : Container(),
+                          Expanded(
+                              flex: 4,
                               child: Column(
-                                children: <Widget>[image1, image2],
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                              ),
-                            ),
-                            new Expanded(
-                                child: Container(
-                                    decoration: new BoxDecoration(
-                                        color: Colors.green[700],
-                                        borderRadius: new BorderRadius.all(
-                                            new Radius.circular(30.0))),
-                                    child: Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: new Center(
-                                            child: new Text(
-                                          _bottomMessage,
-                                          textAlign: TextAlign.center,
-                                          style: new TextStyle(
-                                              fontFamily: "RobotoCondensed",
-                                              fontSize: textSize - 2,
-                                              color: Colors.white),
-                                        ))))),
-                          ])),
-                  Expanded(child: Container(), flex: 1)
-                ]))),
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: _periods
+                                      .map((period) => PeriodWidget(period))
+                                      .toList())),
+                          Container(height: 12.0),
+                          Expanded(
+                              flex: 2,
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(right: padding),
+                                      child: Column(
+                                        children: <Widget>[image1, image2],
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                      ),
+                                    ),
+                                    Expanded(
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.green[700],
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(30.0))),
+                                            child: Padding(
+                                                padding: EdgeInsets.all(12.0),
+                                                child: Center(
+                                                    child: Text(
+                                                  _bottomMessage,
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                          "RobotoCondensed",
+                                                      fontSize: textSize - 4,
+                                                      color: Colors.white),
+                                                ))))),
+                                  ])),
+                        ]))),
+                Expanded(
+                    flex: 1,
+                    child: Container(
+                        color: Colors.green[700],
+                        child: Padding(
+                            padding: EdgeInsets.only(
+                                left: padding,
+                                right: padding,
+                                top: 8.0,
+                                bottom: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Flexible(
+                                  fit: FlexFit.tight,
+                                  child: FlatButton(
+                                    onPressed: () {
+                                      _launchPage(
+                                          "https://tdchristian.edsby.com/p/BasePublic/");
+                                    },
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Expanded(
+                                            child: Image.asset(
+                                                'assets/edsby.png')),
+                                        Padding(
+                                            padding: EdgeInsets.only(top: 8.0),
+                                            child: Text(
+                                              'EDSBY',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontFamily: "RobotoCondensed",
+                                                  fontSize: textSize - 6.0,
+                                                  color: Colors.white),
+                                            ))
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Flexible(
+                                    fit: FlexFit.tight,
+                                    child: FlatButton(
+                                      onPressed: () {
+                                        _launchPage(
+                                            "https://splash.tdchristian.ca/");
+                                      },
+                                      child: Column(
+                                        children: <Widget>[
+                                          Expanded(
+                                              child: Image.asset(
+                                                  'assets/splash.png')),
+                                          Text(
+                                            'SPLASH!',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontFamily: "RobotoCondensed",
+                                                fontSize: textSize - 6.0,
+                                                color: Colors.white),
+                                          ),
+                                        ],
+                                      ),
+                                    )),
+                                Flexible(
+                                  fit: FlexFit.tight,
+                                  child: FlatButton(
+                                    onPressed: () {
+                                      _launchPage(
+                                          "https://tdch.mybusplanner.ca/StudentLogin.aspx");
+                                    },
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 8.0,
+                                                left: 8.0,
+                                                right: 8.0),
+                                            child:
+                                                Image.asset('assets/bus.png')),
+                                        Padding(
+                                            padding: EdgeInsets.only(top: 0.0),
+                                            child: Text(
+                                              'BUS TRACKER',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontFamily: "RobotoCondensed",
+                                                  fontSize: textSize - 6.0,
+                                                  color: Colors.white),
+                                            ))
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ))))
+              ],
+            )),
         hideTopMessage
-            ? new Scaffold(
-                backgroundColor: new Color(0xFFFFFF),
-                appBar: new AppBar(
-                    backgroundColor: new Color(0xFFFFFF),
+            ? Scaffold(
+                backgroundColor: Color(0xFFFFFF),
+                appBar: AppBar(
+                    backgroundColor: Color(0xFFFFFF),
                     elevation: 0.0,
                     actions: menuChoices),
               )
-            : new Container()
+            : Container()
       ]);
     } else if (failedToGetInfoBoard && attemptedGetInfoBoard) {
-      return new Scaffold(
-          appBar: new AppBar(
+      return Scaffold(
+          appBar: AppBar(
               elevation: 0.0,
               backgroundColor: Colors.green,
               actions: menuChoices),
           backgroundColor: Colors.green,
-          body: new Center(
-              child: new Column(
+          body: Center(
+              child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              new Text('!',
-                  style: new TextStyle(
+              Text('!',
+                  style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontFamily: "RobotoCondensed",
                       fontSize: 250.0,
                       color: Colors.white)),
-              new Text('FAILED TO LOAD INFOBOARD',
-                  style: new TextStyle(
+              Text('FAILED TO LOAD INFOBOARD',
+                  style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontFamily: "RobotoCondensed",
                       fontSize: 24.0,
                       color: Colors.white)),
-              new Text('PLEASE CHECK YOUR INTERNET CONNECTION',
-                  style: new TextStyle(
+              Text('PLEASE CHECK YOUR INTERNET CONNECTION',
+                  style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontFamily: "RobotoCondensed",
                       fontSize: 18.0,
@@ -343,19 +457,19 @@ class _InfoBoardState extends State<InfoBoard> {
             ],
           )));
     } else if (!isSchoolToday && attemptedGetInfoBoard) {
-      return new Scaffold(
+      return Scaffold(
           appBar: appBar,
           backgroundColor: Colors.green,
-          body: new Center(
-              child: new Column(
+          body: Center(
+              child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              new Image(
-                image: new AssetImage('assets/happyface.png'),
+              Image(
+                image: AssetImage('assets/happyface.png'),
                 height: 200.0,
               ),
-              new Text('NOTHING TO SHOW HERE',
-                  style: new TextStyle(
+              Text('NOTHING TO SHOW HERE',
+                  style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontFamily: "RobotoCondensed",
                       fontSize: 36.0,
@@ -363,7 +477,7 @@ class _InfoBoardState extends State<InfoBoard> {
             ],
           )));
     } else {
-      return new Scaffold(backgroundColor: Colors.green);
+      return Scaffold(backgroundColor: Colors.green);
     }
   }
 }
@@ -377,8 +491,8 @@ class PeriodWidget extends StatelessWidget {
     int hour = int.parse(time24.substring(0, colonIndex));
     int minute = int.parse(time24.substring(colonIndex + 1));
 
-    var now = new DateTime.now();
-    var dateTime = new DateTime(now.year, now.month, now.day, hour, minute);
+    var now = DateTime.now();
+    var dateTime = DateTime(now.year, now.month, now.day, hour, minute);
 
     if (lastChecked != null) {
       if (lastChecked.isBefore(now)) {
@@ -390,7 +504,7 @@ class PeriodWidget extends StatelessWidget {
 
     lastChecked = dateTime;
 
-    var formatter = new DateFormat('K:m');
+    var formatter = DateFormat('K:m');
     String time12 = formatter.format(dateTime);
 
     if (minute < 10) {
@@ -431,33 +545,32 @@ class PeriodWidget extends StatelessWidget {
         " - " +
         change24HourTo12Hour(_period.endTime);
 
-    return new Expanded(
-        child: new Material(
+    return Expanded(
+        child: Material(
             color: Colors.green,
-            borderRadius: new BorderRadius.all(new Radius.circular(8.0)),
-            textStyle: new TextStyle(
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+            textStyle: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: "RobotoCondensed",
                 fontSize: textSize,
                 color: Colors.white),
-            child: new Container(
-                decoration: new BoxDecoration(
+            child: Container(
+                decoration: BoxDecoration(
                     color: currentPeriod == this ? Colors.green[700] : null,
-                    borderRadius:
-                        new BorderRadius.all(new Radius.circular(30.0))),
+                    borderRadius: BorderRadius.all(Radius.circular(30.0))),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      new Expanded(
-                        child: new Text(
+                      Expanded(
+                        child: Text(
                           name.toUpperCase(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.left,
                         ),
                       ),
-                      new Container(
-                        child: new Text(
+                      Container(
+                        child: Text(
                           startTime,
                           textAlign: TextAlign.left,
                         ),
@@ -471,21 +584,21 @@ Widget getCustomPeriodsFields() {
 
   if (enableCustomPeriodNames) {
     for (int i = 0; i < periodNames.length; i++) {
-      periodFields.add(new Row(
+      periodFields.add(Row(
         children: [
-          new Padding(
-            padding: new EdgeInsets.only(left: 16.0, right: 16.0),
-            child: new Text(
+          Padding(
+            padding: EdgeInsets.only(left: 16.0, right: 16.0),
+            child: Text(
               periodNames[i],
-              style: new TextStyle(fontSize: 12.0),
+              style: TextStyle(fontSize: 12.0),
               maxLines: 1,
             ),
           ),
-          new Expanded(
-            child: new TextField(
-              decoration: new InputDecoration(
+          Expanded(
+            child: TextField(
+              decoration: InputDecoration(
                   labelText: customPeriodNames[i],
-                  labelStyle: new TextStyle(color: Colors.black87)),
+                  labelStyle: TextStyle(color: Colors.black87)),
               onChanged: (String input) {
                 customPeriodNames[i] = input;
               },
@@ -498,35 +611,35 @@ Widget getCustomPeriodsFields() {
   if (grade9Mode) {
     periodFields.insert(
         0,
-        new Padding(
-            padding: new EdgeInsets.only(top: 8.0),
-            child: new Text("DAY 1",
-                style: new TextStyle(fontSize: 16.0, color: Colors.black54))));
-    periodFields.add(new SizedBox(
+        Padding(
+            padding: EdgeInsets.only(top: 8.0),
+            child: Text("DAY 1",
+                style: TextStyle(fontSize: 16.0, color: Colors.black54))));
+    periodFields.add(SizedBox(
       height: 16.0,
     ));
-    periodFields.add(new Divider());
-    periodFields.add(new Padding(
-        padding: new EdgeInsets.only(top: 8.0),
-        child: new Text("DAY 2",
-            style: new TextStyle(fontSize: 16.0, color: Colors.black54))));
+    periodFields.add(Divider());
+    periodFields.add(Padding(
+        padding: EdgeInsets.only(top: 8.0),
+        child: Text("DAY 2",
+            style: TextStyle(fontSize: 16.0, color: Colors.black54))));
 
     for (int i = 0; i < periodNames.length; i++) {
-      periodFields.add(new Row(
+      periodFields.add(Row(
         children: [
-          new Padding(
-            padding: new EdgeInsets.only(left: 16.0, right: 16.0),
-            child: new Text(
+          Padding(
+            padding: EdgeInsets.only(left: 16.0, right: 16.0),
+            child: Text(
               periodNames[i],
-              style: new TextStyle(fontSize: 12.0),
+              style: TextStyle(fontSize: 12.0),
               maxLines: 1,
             ),
           ),
-          new Expanded(
-            child: new TextField(
-              decoration: new InputDecoration(
+          Expanded(
+            child: TextField(
+              decoration: InputDecoration(
                   labelText: customPeriodNamesDay2[i],
-                  labelStyle: new TextStyle(color: Colors.black87)),
+                  labelStyle: TextStyle(color: Colors.black87)),
               onChanged: (String input) {
                 customPeriodNamesDay2[i] = input;
               },
@@ -537,5 +650,5 @@ Widget getCustomPeriodsFields() {
     }
   }
 
-  return new Column(children: periodFields);
+  return Column(children: periodFields);
 }
