@@ -391,17 +391,19 @@ class _InfoBoardState extends State<InfoBoard> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                top: 8.0,
-                                                left: 8.0,
-                                                right: 8.0),
-                                            child:
-                                                Image.asset('assets/bus.png')),
+                                        Expanded(
+                                            child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: 8.0,
+                                                    left: 8.0,
+                                                    right: 8.0),
+                                                child: Image.asset(
+                                                    'assets/bus.png'))),
                                         Padding(
                                             padding: EdgeInsets.only(top: 0.0),
                                             child: Text(
                                               'BUS TRACKER',
+                                              textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w600,
                                                   fontFamily: "RobotoCondensed",
