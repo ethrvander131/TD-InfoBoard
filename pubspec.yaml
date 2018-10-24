@@ -5,11 +5,11 @@ dependencies:
   flutter:
     sdk: flutter
 
-  http: ^0.11.3
-  intl: "^0.15.2"
-  path_provider: "^0.4.0"
-  shared_preferences: "^0.4.0"
-  url_launcher: "^3.0.0"
+  http:
+  intl:
+  path_provider:
+  shared_preferences:
+  url_launcher:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

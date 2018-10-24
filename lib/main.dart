@@ -236,13 +236,11 @@ class _InfoBoardState extends State<InfoBoard> {
           _image1Url != ""
               ? graphicsBaseUrl + _image1Url
               : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
-          height: 90.0,
+          fit: BoxFit.contain,
         );
-        image2 = Image.network(
-            _image2Url != ""
-                ? graphicsBaseUrl + _image2Url
-                : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
-            height: 90.0);
+        image2 = Image.network(_image2Url != ""
+            ? graphicsBaseUrl + _image2Url
+            : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif");
       } catch (exception) {
         print(exception);
       }
@@ -261,8 +259,7 @@ class _InfoBoardState extends State<InfoBoard> {
         Scaffold(
             appBar: hideTopMessage ? null : appBar,
             backgroundColor: Colors.green,
-            body: SafeArea(
-                child: Column(
+            body: Column(
               children: <Widget>[
                 Expanded(
                     flex: 6,
@@ -288,15 +285,19 @@ class _InfoBoardState extends State<InfoBoard> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(right: padding),
-                                      child: Column(
-                                        children: <Widget>[image1, image2],
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                      ),
-                                    ),
-                                    Expanded(
+                                    Flexible(
+                                        flex: 2,
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsets.only(right: padding),
+                                          child: Column(
+                                            children: <Widget>[image1, image2],
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                          ),
+                                        )),
+                                    Flexible(
+                                        flex: 5,
                                         child: Container(
                                             decoration: BoxDecoration(
                                                 color: Colors.green[700],
@@ -326,7 +327,8 @@ class _InfoBoardState extends State<InfoBoard> {
                                 right: padding,
                                 top: 8.0,
                                 bottom: 8.0),
-                            child: Row(
+                            child: SafeArea(
+                                child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Flexible(
@@ -415,9 +417,9 @@ class _InfoBoardState extends State<InfoBoard> {
                                   ),
                                 )
                               ],
-                            ))))
+                            )))))
               ],
-            ))),
+            )),
         hideTopMessage
             ? Scaffold(
                 backgroundColor: Color(0xFFFFFF),
@@ -509,6 +511,8 @@ class PeriodWidget extends StatelessWidget {
 
     var formatter = DateFormat('K:m');
     String time12 = formatter.format(dateTime);
+
+    hour = hour + 11;
 
     if (minute < 10) {
       colonIndex = time12.indexOf(":");
