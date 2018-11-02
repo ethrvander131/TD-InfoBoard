@@ -174,7 +174,7 @@ Widget getCustomPeriodsFields() {
         Padding(
             padding: EdgeInsets.only(top: 8.0),
             child: Text("DAY 1",
-                style: TextStyle(fontSize: 16.0, color: Colors.black54))));
+                style: TextStyle(fontSize: 16.0, color: Colors.white))));
     periodFields.add(SizedBox(
       height: 16.0,
     ));
@@ -182,26 +182,37 @@ Widget getCustomPeriodsFields() {
     periodFields.add(Padding(
         padding: EdgeInsets.only(top: 8.0),
         child: Text("DAY 2",
-            style: TextStyle(fontSize: 16.0, color: Colors.black54))));
+            style: TextStyle(fontSize: 16.0, color: Colors.white))));
 
     for (int i = 0; i < periodNames.length; i++) {
+      TextEditingController _controller =
+          TextEditingController(text: customPeriodNamesDay2[i]);
+      _controller.selection =
+          TextSelection.collapsed(offset: _controller.value.text.length);
       periodFields.add(Row(
         children: [
           Padding(
             padding: EdgeInsets.only(left: 16.0, right: 16.0),
             child: Text(
               periodNames[i],
-              style: TextStyle(fontSize: 12.0),
+              style: _textStyle,
               maxLines: 1,
             ),
           ),
           Expanded(
             child: TextField(
+              textCapitalization: TextCapitalization.characters,
+              style: _subtitleTextStyle,
+              cursorColor: Colors.white,
+              controller: _controller,
               decoration: InputDecoration(
-                  labelText: customPeriodNamesDay2[i],
-                  labelStyle: TextStyle(color: Colors.black87)),
+                border: UnderlineInputBorder(
+                  borderSide:
+                      BorderSide(color: Colors.white, style: BorderStyle.solid),
+                ),
+              ),
               onChanged: (String input) {
-                customPeriodNamesDay2[i] = input;
+                customPeriodNamesDay2[i] = input == "" ? periodNames[i] : input;
               },
             ),
           )

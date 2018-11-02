@@ -397,13 +397,12 @@ class _InfoBoardState extends State<InfoBoard> {
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         Expanded(
-                                            child: Padding(
-                                                padding: EdgeInsets.only(
-                                                    top: 8.0,
-                                                    left: 8.0,
-                                                    right: 8.0),
-                                                child: Image.asset(
-                                                    'assets/bus.png'))),
+                                          child: Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 8.0, right: 8.0),
+                                              child: Image.asset(
+                                                  'assets/bus.png')),
+                                        ),
                                         Padding(
                                             padding: EdgeInsets.only(top: 0.0),
                                             child: AutoSizeText(
