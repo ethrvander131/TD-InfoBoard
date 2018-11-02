@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'period.dart';
 import 'SettingsPage.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 bool grade9Mode = false;
 bool hideTopMessage = false;
@@ -306,7 +307,7 @@ class _InfoBoardState extends State<InfoBoard> {
                                             child: Padding(
                                                 padding: EdgeInsets.all(12.0),
                                                 child: Center(
-                                                    child: Text(
+                                                    child: AutoSizeText(
                                                   _bottomMessage,
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
@@ -327,8 +328,7 @@ class _InfoBoardState extends State<InfoBoard> {
                                 right: padding,
                                 top: 8.0,
                                 bottom: 8.0),
-                            child: SafeArea(
-                                child: Row(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Flexible(
@@ -417,7 +417,7 @@ class _InfoBoardState extends State<InfoBoard> {
                                   ),
                                 )
                               ],
-                            )))))
+                            ))))
               ],
             )),
         hideTopMessage
@@ -512,8 +512,6 @@ class PeriodWidget extends StatelessWidget {
     var formatter = DateFormat('K:m');
     String time12 = formatter.format(dateTime);
 
-    hour = hour + 11;
-
     if (minute < 10) {
       colonIndex = time12.indexOf(":");
       String minuteString = "0" + minute.toString();
@@ -584,78 +582,4 @@ class PeriodWidget extends StatelessWidget {
                       ),
                     ]))));
   }
-}
-
-Widget getCustomPeriodsFields() {
-  List<Widget> periodFields = [];
-
-  if (enableCustomPeriodNames) {
-    for (int i = 0; i < periodNames.length; i++) {
-      periodFields.add(Row(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: 16.0, right: 16.0),
-            child: Text(
-              periodNames[i],
-              style: TextStyle(fontSize: 12.0),
-              maxLines: 1,
-            ),
-          ),
-          Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                  labelText: customPeriodNames[i],
-                  labelStyle: TextStyle(color: Colors.black87)),
-              onChanged: (String input) {
-                customPeriodNames[i] = input;
-              },
-            ),
-          )
-        ],
-      ));
-    }
-  }
-  if (grade9Mode) {
-    periodFields.insert(
-        0,
-        Padding(
-            padding: EdgeInsets.only(top: 8.0),
-            child: Text("DAY 1",
-                style: TextStyle(fontSize: 16.0, color: Colors.black54))));
-    periodFields.add(SizedBox(
-      height: 16.0,
-    ));
-    periodFields.add(Divider());
-    periodFields.add(Padding(
-        padding: EdgeInsets.only(top: 8.0),
-        child: Text("DAY 2",
-            style: TextStyle(fontSize: 16.0, color: Colors.black54))));
-
-    for (int i = 0; i < periodNames.length; i++) {
-      periodFields.add(Row(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: 16.0, right: 16.0),
-            child: Text(
-              periodNames[i],
-              style: TextStyle(fontSize: 12.0),
-              maxLines: 1,
-            ),
-          ),
-          Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                  labelText: customPeriodNamesDay2[i],
-                  labelStyle: TextStyle(color: Colors.black87)),
-              onChanged: (String input) {
-                customPeriodNamesDay2[i] = input;
-              },
-            ),
-          )
-        ],
-      ));
-    }
-  }
-
-  return Column(children: periodFields);
 }
