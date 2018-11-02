@@ -63,8 +63,9 @@ class MyApp extends StatelessWidget {
         title: "TDChristian InfoBoard",
         home: InfoBoard(),
         theme: ThemeData(
-          primaryColor: Colors.green,
-        ));
+            primaryColor: Colors.green,
+            hintColor: Colors.black12,
+            dividerColor: Colors.black12));
   }
 }
 
