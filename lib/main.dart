@@ -62,7 +62,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: "TDChristian InfoBoard",
         home: InfoBoard(),
-        theme: ThemeData(primaryColor: Colors.green));
+        theme: ThemeData(
+          primaryColor: Colors.green,
+        ));
   }
 }
 
@@ -403,8 +405,9 @@ class _InfoBoardState extends State<InfoBoard> {
                                                     'assets/bus.png'))),
                                         Padding(
                                             padding: EdgeInsets.only(top: 0.0),
-                                            child: Text(
+                                            child: AutoSizeText(
                                               'BUS TRACKER',
+                                              maxLines: 1,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w600,
