@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'period.dart';
 import 'SettingsPage.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 bool grade9Mode = false;
 bool hideTopMessage = false;
@@ -61,7 +62,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: "TDChristian InfoBoard",
         home: InfoBoard(),
-        theme: ThemeData(primaryColor: Colors.green));
+        theme: ThemeData(
+            primaryColor: Colors.green,
+            hintColor: Colors.black12,
+            dividerColor: Colors.black12));
   }
 }
 
@@ -236,13 +240,11 @@ class _InfoBoardState extends State<InfoBoard> {
           _image1Url != ""
               ? graphicsBaseUrl + _image1Url
               : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
-          height: 90.0,
+          fit: BoxFit.contain,
         );
-        image2 = Image.network(
-            _image2Url != ""
-                ? graphicsBaseUrl + _image2Url
-                : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif",
-            height: 90.0);
+        image2 = Image.network(_image2Url != ""
+            ? graphicsBaseUrl + _image2Url
+            : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif");
       } catch (exception) {
         print(exception);
       }
@@ -287,15 +289,19 @@ class _InfoBoardState extends State<InfoBoard> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(right: padding),
-                                      child: Column(
-                                        children: <Widget>[image1, image2],
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                      ),
-                                    ),
-                                    Expanded(
+                                    Flexible(
+                                        flex: 2,
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsets.only(right: padding),
+                                          child: Column(
+                                            children: <Widget>[image1, image2],
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                          ),
+                                        )),
+                                    Flexible(
+                                        flex: 5,
                                         child: Container(
                                             decoration: BoxDecoration(
                                                 color: Colors.green[700],
@@ -304,7 +310,7 @@ class _InfoBoardState extends State<InfoBoard> {
                                             child: Padding(
                                                 padding: EdgeInsets.all(12.0),
                                                 child: Center(
-                                                    child: Text(
+                                                    child: AutoSizeText(
                                                   _bottomMessage,
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
@@ -390,17 +396,19 @@ class _InfoBoardState extends State<InfoBoard> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                top: 8.0,
-                                                left: 8.0,
-                                                right: 8.0),
-                                            child:
-                                                Image.asset('assets/bus.png')),
+                                        Expanded(
+                                          child: Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 8.0, right: 8.0),
+                                              child: Image.asset(
+                                                  'assets/bus.png')),
+                                        ),
                                         Padding(
                                             padding: EdgeInsets.only(top: 0.0),
-                                            child: Text(
+                                            child: AutoSizeText(
                                               'BUS TRACKER',
+                                              maxLines: 1,
+                                              textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w600,
                                                   fontFamily: "RobotoCondensed",
@@ -577,78 +585,4 @@ class PeriodWidget extends StatelessWidget {
                       ),
                     ]))));
   }
-}
-
-Widget getCustomPeriodsFields() {
-  List<Widget> periodFields = [];
-
-  if (enableCustomPeriodNames) {
-    for (int i = 0; i < periodNames.length; i++) {
-      periodFields.add(Row(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: 16.0, right: 16.0),
-            child: Text(
-              periodNames[i],
-              style: TextStyle(fontSize: 12.0),
-              maxLines: 1,
-            ),
-          ),
-          Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                  labelText: customPeriodNames[i],
-                  labelStyle: TextStyle(color: Colors.black87)),
-              onChanged: (String input) {
-                customPeriodNames[i] = input;
-              },
-            ),
-          )
-        ],
-      ));
-    }
-  }
-  if (grade9Mode) {
-    periodFields.insert(
-        0,
-        Padding(
-            padding: EdgeInsets.only(top: 8.0),
-            child: Text("DAY 1",
-                style: TextStyle(fontSize: 16.0, color: Colors.black54))));
-    periodFields.add(SizedBox(
-      height: 16.0,
-    ));
-    periodFields.add(Divider());
-    periodFields.add(Padding(
-        padding: EdgeInsets.only(top: 8.0),
-        child: Text("DAY 2",
-            style: TextStyle(fontSize: 16.0, color: Colors.black54))));
-
-    for (int i = 0; i < periodNames.length; i++) {
-      periodFields.add(Row(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: 16.0, right: 16.0),
-            child: Text(
-              periodNames[i],
-              style: TextStyle(fontSize: 12.0),
-              maxLines: 1,
-            ),
-          ),
-          Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                  labelText: customPeriodNamesDay2[i],
-                  labelStyle: TextStyle(color: Colors.black87)),
-              onChanged: (String input) {
-                customPeriodNamesDay2[i] = input;
-              },
-            ),
-          )
-        ],
-      ));
-    }
-  }
-
-  return Column(children: periodFields);
 }
