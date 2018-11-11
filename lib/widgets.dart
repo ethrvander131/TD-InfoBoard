@@ -120,22 +120,27 @@ class FailedInfoBoard extends StatelessWidget {
 class NoInfoBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Expanded(
+        flex: 6,
         child: Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Image(
-          image: AssetImage('assets/happyface.png'),
-          height: 200.0,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Image(
+              image: AssetImage('assets/happyface.png'),
+              height: 200.0,
+            ),
+            Text('NOTHING TO SHOW HERE',
+                style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 36.0,
+                    color: Colors.white)),
+          ],
         ),
-        Text('NOTHING TO SHOW HERE',
-            style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 36.0,
-                color: Colors.white)),
-        LinkBar()
-      ],
-    ));
+      ),
+      Container(height: padding),
+      Expanded(child: LinkBar()),
+    ]);
   }
 }
 
