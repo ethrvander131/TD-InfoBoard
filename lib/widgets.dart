@@ -83,8 +83,7 @@ class InfoBoard extends StatelessWidget {
                     ]),
                   )),
             ])),
-        Container(height: padding),
-        Expanded(flex: 1, child: LinkBar())
+        LinkBar()
       ],
     );
   }
@@ -138,8 +137,7 @@ class NoInfoBoard extends StatelessWidget {
           ],
         ),
       ),
-      Container(height: padding),
-      Expanded(child: LinkBar()),
+      LinkBar(),
     ]);
   }
 }
@@ -147,12 +145,21 @@ class NoInfoBoard extends StatelessWidget {
 class AssemblyInfoBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: AutoSizeText('ASSEMBLY THIS MORNING',
-            style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 48.0,
-                color: Colors.white)));
+    return Column(
+      children: <Widget>[
+        Expanded(
+          flex: 6,
+          child: Center(
+              child: AutoSizeText('ASSEMBLY THIS MORNING',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 48.0,
+                      color: Colors.white))),
+        ),
+        LinkBar()
+      ],
+    );
   }
 }
 
@@ -167,89 +174,95 @@ class LinkBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        color: Colors.green[700],
-        child: Padding(
-            padding: EdgeInsets.only(
-                left: padding, right: padding, top: 8.0, bottom: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Flexible(
-                  fit: FlexFit.tight,
-                  child: FlatButton(
-                    onPressed: () {
-                      _launchPage(
-                          "https://tdchristian.edsby.com/p/BasePublic/");
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Expanded(child: Image.asset('assets/edsby.png')),
-                        Padding(
-                            padding: EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              'EDSBY',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: textSize - 6.0,
-                                  color: Colors.white),
-                            ))
-                      ],
-                    ),
-                  ),
-                ),
-                Flexible(
-                    fit: FlexFit.tight,
-                    child: FlatButton(
-                      onPressed: () {
-                        _launchPage("https://splash.tdchristian.ca/");
-                      },
-                      child: Column(
-                        children: <Widget>[
-                          Expanded(child: Image.asset('assets/splash.png')),
-                          Text(
-                            'SPLASH!',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: textSize - 6.0,
-                                color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    )),
-                Flexible(
-                  fit: FlexFit.tight,
-                  child: FlatButton(
-                    onPressed: () {
-                      _launchPage(
-                          "https://tdch.mybusplanner.ca/StudentLogin.aspx");
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Expanded(
-                          child: Padding(
-                              padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                              child: Image.asset('assets/bus.png')),
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.only(top: padding),
+        child: Container(
+            color: Colors.green[700],
+            child: Padding(
+                padding: EdgeInsets.only(
+                    left: padding, right: padding, top: 8.0, bottom: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Flexible(
+                      fit: FlexFit.tight,
+                      child: FlatButton(
+                        onPressed: () {
+                          _launchPage(
+                              "https://tdchristian.edsby.com/p/BasePublic/");
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Expanded(child: Image.asset('assets/edsby.png')),
+                            Padding(
+                                padding: EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                  'EDSBY',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: textSize - 6.0,
+                                      color: Colors.white),
+                                ))
+                          ],
                         ),
-                        Padding(
-                            padding: EdgeInsets.only(top: 0.0),
-                            child: AutoSizeText(
-                              'BUS TRACKER',
-                              maxLines: 1,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: textSize - 6.0,
-                                  color: Colors.white),
-                            ))
-                      ],
+                      ),
                     ),
-                  ),
-                )
-              ],
-            )));
+                    Flexible(
+                        fit: FlexFit.tight,
+                        child: FlatButton(
+                          onPressed: () {
+                            _launchPage("https://splash.tdchristian.ca/");
+                          },
+                          child: Column(
+                            children: <Widget>[
+                              Expanded(child: Image.asset('assets/splash.png')),
+                              Text(
+                                'SPLASH!',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: textSize - 6.0,
+                                    color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        )),
+                    Flexible(
+                      fit: FlexFit.tight,
+                      child: FlatButton(
+                        onPressed: () {
+                          _launchPage(
+                              "https://tdch.mybusplanner.ca/StudentLogin.aspx");
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Expanded(
+                              child: Padding(
+                                  padding:
+                                      EdgeInsets.only(left: 8.0, right: 8.0),
+                                  child: Image.asset('assets/bus.png')),
+                            ),
+                            Padding(
+                                padding: EdgeInsets.only(top: 0.0),
+                                child: AutoSizeText(
+                                  'BUS TRACKER',
+                                  maxLines: 1,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: textSize - 6.0,
+                                      color: Colors.white),
+                                ))
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ))),
+      ),
+    );
   }
 }
 
