@@ -99,7 +99,12 @@ class _HomePageState extends State<HomePage> {
       var response = await request.close();
       if (response.statusCode == HttpStatus.ok) {
         failedToGetInfoBoard = false;
-        var jsonData = await response.transform(utf8.decoder).join();
+/*
+        String jsonData = await DefaultAssetBundle.of(context)
+            .loadString("assets/test-data.json");
+
+        */
+        String jsonData = await response.transform(utf8.decoder).join();
         var data = json.decode(jsonData);
         centerMessageData = data['3'];
         periodsData = getPeriods(data['4']);
