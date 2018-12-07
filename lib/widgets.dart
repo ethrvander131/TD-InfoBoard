@@ -42,45 +42,48 @@ class InfoBoard extends StatelessWidget {
                   flex: 2,
                   child: Padding(
                     padding: EdgeInsets.only(left: padding, right: padding),
-                    child: Row(children: [
-                      Flexible(
-                          flex: 2,
-                          child: Padding(
-                            padding: EdgeInsets.only(right: padding),
-                            child: Column(
-                              children: <Widget>[
-                                FadeInImage.memoryNetwork(
-                                    placeholder: kTransparentImage,
-                                    image: image1Url != ""
-                                        ? graphicsBaseUrl + image1Url
-                                        : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif"),
-                                FadeInImage.memoryNetwork(
-                                    placeholder: kTransparentImage,
-                                    image: image2Url != ""
-                                        ? graphicsBaseUrl + image2Url
-                                        : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif")
-                              ],
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            ),
-                          )),
-                      Flexible(
-                          flex: 5,
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.green[700],
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(30.0))),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                              flex: 2,
                               child: Padding(
-                                  padding: EdgeInsets.all(12.0),
-                                  child: Center(
-                                      child: AutoSizeText(
-                                    bottomMessage,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: textSize - 4,
-                                        color: Colors.white),
-                                  ))))),
-                    ]),
+                                padding: EdgeInsets.only(right: padding),
+                                child: Column(
+                                  children: <Widget>[
+                                    FadeInImage.memoryNetwork(
+                                        placeholder: kTransparentImage,
+                                        image: image1Url != ""
+                                            ? graphicsBaseUrl + image1Url
+                                            : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif"),
+                                    FadeInImage.memoryNetwork(
+                                        placeholder: kTransparentImage,
+                                        image: image2Url != ""
+                                            ? graphicsBaseUrl + image2Url
+                                            : "http://splash.tdchristian.ca/apps/infoboard/graphics//HappyFace.gif")
+                                  ],
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                ),
+                              )),
+                          Flexible(
+                              flex: 5,
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.green[700],
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(30.0))),
+                                  child: Padding(
+                                      padding: EdgeInsets.all(12.0),
+                                      child: Center(
+                                          child: AutoSizeText(
+                                        bottomMessage,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: textSize - 4,
+                                            color: Colors.white),
+                                      ))))),
+                        ]),
                   )),
             ])),
         LinkBar()
