@@ -219,7 +219,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _getInfoBoardScreen() {
-    if (isAssembly) {
+    if (!attemptedGetInfoBoard) {
+      return AwaitingInfoBoard();
+    } else if (isAssembly) {
       return AssemblyInfoBoard();
     } else if (isSchoolToday) {
       return InfoBoard();

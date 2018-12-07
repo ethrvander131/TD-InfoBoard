@@ -142,6 +142,17 @@ class NoInfoBoard extends StatelessWidget {
   }
 }
 
+class AwaitingInfoBoard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          strokeWidth: 5.0),
+    );
+  }
+}
+
 class AssemblyInfoBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
