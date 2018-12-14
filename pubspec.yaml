@@ -10,6 +10,9 @@ dependencies:
   path_provider:
   shared_preferences:
   url_launcher:
+      git:
+        url: git://github.com/flutter/plugins
+        path: packages/url_launcher
   auto_size_text:
   transparent_image:
   cupertino_icons:

@@ -14,7 +14,7 @@ packages:
       name: auto_size_text
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.2"
+    version: "0.3.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -180,10 +180,12 @@ packages:
   url_launcher:
     dependency: "direct main"
     description:
-      name: url_launcher
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.0.2"
+      path: "packages/url_launcher"
+      ref: HEAD
+      resolved-ref: "3897d4305492d658ed5a22570cbe36f3cb2ee73e"
+      url: "git://github.com/flutter/plugins"
+    source: git
+    version: "4.0.3"
   vector_math:
     dependency: transitive
     description:
