@@ -95,27 +95,34 @@ class InfoBoard extends StatelessWidget {
 class FailedInfoBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Text('!',
-            style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 250.0,
-                color: Colors.white)),
-        Text('FAILED TO LOAD INFOBOARD',
-            style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 24.0,
-                color: Colors.white)),
-        Text('PLEASE CHECK YOUR INTERNET CONNECTION',
-            style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 18.0,
-                color: Colors.white))
-      ],
-    ));
+    return Padding(
+      padding: const EdgeInsets.only(left: 24, right: 24),
+      child: Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text('!',
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 250.0,
+                  color: Colors.white)),
+          AutoSizeText('FAILED TO LOAD INFOBOARD',
+              maxLines: 1,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 24.0,
+                  color: Colors.white)),
+          AutoSizeText('PLEASE CHECK YOUR INTERNET CONNECTION',
+              maxLines: 1,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 18.0,
+                  color: Colors.white))
+        ],
+      )),
+    );
   }
 }
 
@@ -125,19 +132,24 @@ class NoInfoBoard extends StatelessWidget {
     return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       Expanded(
         flex: 6,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Image(
-              image: AssetImage('assets/happyface.png'),
-              height: 200.0,
-            ),
-            Text('NOTHING TO SHOW HERE',
-                style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 36.0,
-                    color: Colors.white)),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.only(left: 24, right: 24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Image(
+                image: AssetImage('assets/happyface.png'),
+                height: 200.0,
+              ),
+              AutoSizeText('NOTHING TO SHOW HERE',
+                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 36.0,
+                      color: Colors.white)),
+            ],
+          ),
         ),
       ),
       LinkBar(),
@@ -163,13 +175,17 @@ class AssemblyInfoBoard extends StatelessWidget {
       children: <Widget>[
         Expanded(
           flex: 6,
-          child: Center(
-              child: AutoSizeText('ASSEMBLY THIS MORNING',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 48.0,
-                      color: Colors.white))),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 24, right: 24),
+            child: Center(
+                child: AutoSizeText('ASSEMBLY THIS MORNING',
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 48.0,
+                        color: Colors.white))),
+          ),
         ),
         LinkBar()
       ],
