@@ -253,7 +253,8 @@ class _HomePageState extends State<HomePage> {
 
     _performChecks();
 
-    return Scaffold(
+    return SafeArea(
+      child: Scaffold(
         appBar: AppBar(
             elevation: 0.0,
             backgroundColor: Color(0xFFFFFF),
@@ -266,6 +267,6 @@ class _HomePageState extends State<HomePage> {
             ),
             actions: _getMenuChoices()),
         backgroundColor: Colors.green,
-        body: _getInfoBoardScreen());
+        body: _getInfoBoardScreen()));
   }
 }
