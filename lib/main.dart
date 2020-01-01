@@ -253,20 +253,22 @@ class _HomePageState extends State<HomePage> {
 
     _performChecks();
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-            elevation: 0.0,
-            backgroundColor: Color(0xFFFFFF),
-            title: Padding(
-              padding: EdgeInsets.only(left: padding - 8.0),
-              child: Text(
-                hideTopMessage || !isSchoolToday ? "" : topMessage,
-                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w600),
+    return Container(
+      color: Colors.green[700],
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+              elevation: 0.0,
+              backgroundColor: Color(0xFFFFFF),
+              title: Padding(
+                padding: EdgeInsets.only(left: padding - 8.0),
+                child: Text(
+                  hideTopMessage || !isSchoolToday ? "" : topMessage,
+                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w600),
+                ),
               ),
-            ),
-            actions: _getMenuChoices()),
-        backgroundColor: Colors.green,
-        body: _getInfoBoardScreen()));
+              actions: _getMenuChoices()),
+          backgroundColor: Colors.green,
+          body: _getInfoBoardScreen())));
   }
 }

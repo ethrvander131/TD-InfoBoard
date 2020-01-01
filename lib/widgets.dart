@@ -12,14 +12,7 @@ TextStyle _subtitleTextStyle =
     TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 15.0);
 
 class InfoBoard extends StatelessWidget {
-  _launchPage(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Column(
